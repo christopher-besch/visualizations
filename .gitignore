@@ -33,3 +33,5 @@
 
 # Scons stuff
 *.os
+
+.cache
