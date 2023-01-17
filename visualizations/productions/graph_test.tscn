@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://graph/graph.tscn" type="PackedScene" id=1]
+
+[node name="GraphTest" type="Node2D"]
+
+[node name="Graph" parent="." instance=ExtResource( 1 )]
