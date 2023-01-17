@@ -1,5 +1,5 @@
 #include "graph.h"
-#include "PoolArrays.hpp"
+#include "graph_node.h"
 
 using namespace godot;
 
@@ -15,5 +15,6 @@ void Graph::_init() {}
 
 void Graph::_ready()
 {
-    Godot::print("hi");
+    GraphNode* graph_node = get_node<GraphNode>("GraphNode");
+    graph_node->set_fill_color(Color(0.25, 0.875, 0.8125));
 }
