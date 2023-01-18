@@ -10,6 +10,9 @@ class Camera2DCtrl: public Camera2D {
 
 private:
     float m_zoom_factor;
+    float m_max_zoom;
+    float m_min_zoom;
+    float m_cur_zoom;
 
     Vector2 m_mouse_click_pos;
     Vector2 m_camera_click_pos;

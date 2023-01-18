@@ -1,6 +1,7 @@
 #include "camera2d_ctrl.h"
 
 #include <Input.hpp>
+#include <algorithm>
 
 using namespace godot;
 
@@ -13,7 +14,11 @@ void Camera2DCtrl::_init()
 {
     m_mouse_click_pos  = Vector2 {-1.0, -1.0};
     m_camera_click_pos = Vector2 {-1.0, -1.0};
-    m_zoom_factor      = 1.1;
+    // TODO: add property
+    m_zoom_factor = 1.1;
+    m_max_zoom    = 5.0;
+    m_min_zoom    = 0.01;
+    m_cur_zoom    = 1.0;
 }
 
 void Camera2DCtrl::_process(float delta)
@@ -35,9 +40,11 @@ void Camera2DCtrl::_process(float delta)
     }
 
     if(input->is_action_just_released("zoom_in")) {
-        set_zoom(get_zoom() * Vector2(m_zoom_factor, m_zoom_factor));
+        m_cur_zoom = std::clamp(m_cur_zoom * m_zoom_factor, m_min_zoom, m_max_zoom);
+        set_zoom(Vector2(m_cur_zoom, m_cur_zoom));
     }
     if(input->is_action_just_released("zoom_out")) {
-        set_zoom(get_zoom() * 1 / Vector2(m_zoom_factor, m_zoom_factor));
+        m_cur_zoom = std::clamp(m_cur_zoom / m_zoom_factor, m_min_zoom, m_max_zoom);
+        set_zoom(Vector2(m_cur_zoom, m_cur_zoom));
     }
 }
