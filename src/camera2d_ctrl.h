@@ -17,6 +17,9 @@ private:
 public:
     static void _register_methods();
 
+    Camera2DCtrl() {}
+    ~Camera2DCtrl() {}
+
     void _init();
     void _process(float delta);
 };

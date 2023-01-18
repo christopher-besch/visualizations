@@ -1,5 +1,6 @@
 #pragma once
 
+#include "helper.h"
 #include <algorithm>
 
 #include <Color.hpp>
@@ -19,20 +20,17 @@ private:
     String m_text;
     Label* m_label;
 
-private:
-    int64_t get_point_count()
-    {
-        return std::max(m_radius * 1.0, 3.0);
-    }
-
 public:
     static void _register_methods();
 
-    float  get_radius() { return m_radius; }
-    float  get_width() { return m_width; }
-    Color  get_fill_color() { return m_fill_color; }
-    Color  get_stroke_color() { return m_stroke_color; }
-    String get_text() { return m_text; }
+    GraphNode() {};
+    ~GraphNode() {};
+
+    float  get_radius() const { return m_radius; }
+    float  get_width() const { return m_width; }
+    Color  get_fill_color() const { return m_fill_color; }
+    Color  get_stroke_color() const { return m_stroke_color; }
+    String get_text() const { return m_text; }
 
     void set_radius(float radius)
     {
@@ -63,6 +61,12 @@ public:
     void _init();
     void _ready();
     void _draw();
+
+private:
+    int64_t get_point_count() const
+    {
+        return std::max(m_radius * 1.0, 3.0);
+    }
 };
 
 } // namespace godot
