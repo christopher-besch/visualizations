@@ -1,5 +1,6 @@
 #include "camera2d_ctrl.h"
 #include "graph/graph.h"
+#include "graph/graph_edges.h"
 #include "graph/graph_node.h"
 #include "productions/graph_test.h"
 
@@ -20,4 +21,5 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void* handle)
     godot::register_class<godot::GraphNode>();
     godot::register_class<godot::Camera2DCtrl>();
     godot::register_class<godot::GraphTest>();
+    godot::register_class<godot::GraphEdges>();
 }

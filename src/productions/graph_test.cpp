@@ -40,5 +40,5 @@ void GraphTest::_ready()
     prt(out.str());
 
     Graph* graph = get_node<Graph>("Graph");
-    graph->set_adjacency_list(adj, n);
+    graph->set_one_based_adjacency_list(adj, n);
 }

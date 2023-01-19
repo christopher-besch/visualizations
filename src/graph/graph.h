@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graph_edges.h"
 #include "graph_node.h"
 #include "helper.h"
 
@@ -15,7 +16,9 @@ class Graph: public Node2D {
     GODOT_CLASS(Graph, Node2D)
 
 private:
-    Ref<PackedScene> m_graph_node_scene;
+    Ref<PackedScene>        m_graph_node_scene;
+    std::vector<GraphNode*> m_nodes;
+    GraphEdges*             m_edges {nullptr};
 
 public:
     static void _register_methods();
@@ -24,6 +27,7 @@ public:
     ~Graph() {};
 
     void set_adjacency_list(const adjacency_list& adj, int n);
+    void set_one_based_adjacency_list(const adjacency_list& adj, int n);
 
     void _init();
     void _ready();
