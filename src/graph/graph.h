@@ -18,6 +18,7 @@ class Graph: public Node2D {
 private:
     Ref<PackedScene>        m_graph_node_scene;
     std::vector<GraphNode*> m_nodes;
+    adjacency_list          m_adj;
     GraphEdges*             m_edges {nullptr};
 
 public:
@@ -28,6 +29,11 @@ public:
 
     void set_adjacency_list(const adjacency_list& adj, int n);
     void set_one_based_adjacency_list(const adjacency_list& adj, int n);
+
+    const std::vector<GraphNode*>* get_nodes() const
+    {
+        return &m_nodes;
+    }
 
     void _init();
     void _ready();

@@ -38,15 +38,20 @@ void Graph::set_adjacency_list(const adjacency_list& adj, int n)
         add_child(graph_node);
         m_nodes[i] = graph_node;
     }
+    m_adj = adjacency_list(n);
+    for(int i {0}; i < n; ++i)
+        for(int o: adj[i])
+            m_adj[i].insert(o);
+
     for(int i {0}; i < n; ++i) {
         for(int o {0}; o < n; ++o) {
             if(adj[i].count(o) != 0)
                 m_nodes[i]->add_attractor(m_nodes[o], 150);
             else
-                m_nodes[i]->add_attractor(m_nodes[o], 300);
+                m_nodes[i]->add_attractor(m_nodes[o], 200);
         }
     }
-    m_edges->set_nodes(&m_nodes);
+    m_edges->set_nodes(&m_nodes, &m_adj);
 }
 
 void Graph::set_one_based_adjacency_list(const adjacency_list& adj, int n)

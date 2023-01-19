@@ -13,6 +13,7 @@ class GraphEdges: public Node2D {
 
 private:
     const std::vector<GraphNode*>* m_nodes {nullptr};
+    const adjacency_list*          m_adj {nullptr};
 
 public:
     static void _register_methods();
@@ -20,11 +21,15 @@ public:
     GraphEdges() {}
     ~GraphEdges() {}
 
-    void set_nodes(const std::vector<GraphNode*>* nodes)
+    void set_nodes(const std::vector<GraphNode*>* nodes, const adjacency_list* adj)
     {
         m_nodes = nodes;
+        m_adj   = adj;
+        update();
     }
 
     void _init();
+    void _process(float delta);
+    void _draw();
 };
 } // namespace godot
