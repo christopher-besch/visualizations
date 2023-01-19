@@ -1,5 +1,5 @@
 #include "graph_test.h"
-#include "graph.h"
+#include "graph/graph.h"
 
 #include <sstream>
 

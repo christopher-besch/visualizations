@@ -32,7 +32,6 @@ void GraphNode::_ready()
 
 void GraphNode::_draw()
 {
-    Godot::print((long)m_label);
     draw_circle(Vector2(0.0, 0.0), m_radius, m_fill_color);
     draw_arc(Vector2(0.0, 0.0), m_radius, 0, 2 * M_PI, get_point_count(), m_stroke_color, m_width, true);
     m_label->set_text(m_text);

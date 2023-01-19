@@ -4,6 +4,11 @@
 
 [node name="GraphNode" type="Node2D"]
 script = ExtResource( 1 )
+radius = null
+width = null
+fill_color = null
+stroke_color = null
+text = null
 
 [node name="Label" type="Label" parent="."]
 margin_bottom = 14.0

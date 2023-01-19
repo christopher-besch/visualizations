@@ -1,7 +1,7 @@
 #include "camera2d_ctrl.h"
-#include "graph.h"
-#include "graph_node.h"
-#include "graph_test.h"
+#include "graph/graph.h"
+#include "graph/graph_node.h"
+#include "productions/graph_test.h"
 
 extern "C" void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options* o)
 {
