@@ -3,6 +3,7 @@
 #include "helper.h"
 
 #include <algorithm>
+#include <cmath>
 #include <unordered_map>
 
 #include <CircleShape2D.hpp>

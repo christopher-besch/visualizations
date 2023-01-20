@@ -2,6 +2,7 @@
 
 #include <Input.hpp>
 
+#include <cmath>
 #include <sstream>
 
 using namespace godot;
@@ -14,13 +15,21 @@ void GraphTest::_register_methods()
 
 void GraphTest::_init()
 {
+    m_random = RandomNumberGenerator::_new();
+    m_random->randomize();
 }
 
 void GraphTest::_ready()
 {
-    m_adj   = get_input();
     m_graph = get_node<Graph>("Graph");
-    m_graph->set_one_based_adjacency_list(m_adj);
+    m_graph->set_con_attr(500);
+    m_graph->set_uncon_attr(1000);
+
+    // get_input();
+    // m_graph->set_one_based_adjacency_list(m_adj);
+
+    get_random_graph(20);
+    m_graph->set_zero_based_adjacency_list(m_adj);
 
     m_camera = get_node<Camera2DCtrl>("Camera");
 }
@@ -36,7 +45,8 @@ void GraphTest::_process(float delta)
         m_graph->reset_physics();
     }
     if(input->is_action_just_pressed("reset")) {
-        m_graph->reset();
+        get_random_graph(20);
+        m_graph->set_zero_based_adjacency_list(m_adj);
     }
     if(input->is_action_just_pressed("increase_con_attr")) {
         m_graph->set_con_attr(m_graph->get_con_attr() + 20);
@@ -52,30 +62,57 @@ void GraphTest::_process(float delta)
     }
 }
 
-adjacency_list GraphTest::get_input() const
+void GraphTest::get_input()
 {
 #include "graph_input.h"
     int n, m;
     input >> n >> m;
 
-    std::vector<std::set<int>> adj(n + 1);
+    m_adj = adjacency_list(n + 1);
     for(int i {0}; i < m; ++i) {
         int a, b;
         input >> a >> b;
-        adj[a].insert(b);
-        adj[b].insert(a);
+        m_adj[a].insert(b);
+        m_adj[b].insert(a);
+    }
+}
+
+void GraphTest::get_random_graph(int n)
+{
+    m_adj = adjacency_list(n);
+
+    int a = static_cast<int>(std::sqrt(n));
+
+    std::vector<Vector2> pos(n);
+
+    int x = 0;
+    int y = 0;
+    for(int i {0}; i < n; ++i) {
+        pos[i] = Vector2(x, y);
+        prt(x << " " << y);
+        ++y;
+        if(y > a) {
+            y = 0;
+            ++x;
+        }
     }
 
-    // debug
-    std::stringstream out;
-    for(int i {1}; i <= n; ++i) {
-        out << i << ": ";
-        for(int e: adj[i]) {
-            out << e << ", ";
+    for(int a {0}; a < n; ++a) {
+        for(int b {0}; b < n; ++b) {
+            if(a == b)
+                continue;
+            if((pos[a] - pos[b]).length() <= 2 && !m_random->randi_range(0, 5)) {
+                m_adj[a].insert(b);
+                m_adj[b].insert(a);
+            }
         }
-        out << std::endl;
     }
-    prt(out.str());
-    // debug
-    return adj;
+
+    // for(int a {0}; a < n; ++a) {
+    //     int c = m_random->randi_range(0, 2);
+    //     for(int s {0}; s < c; ++s) {
+    //         int b = m_random->randi_range(0, n - 1);
+    //         m_adj[a].insert(b);
+    //     }
+    // }
 }

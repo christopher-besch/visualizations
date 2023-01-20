@@ -73,6 +73,8 @@ void GraphNode::_physics_process(float delta)
         else
             force = real_distance * real_distance / target_distance - target_distance * target_distance / real_distance;
 
+        // keep everything from exploding
+        force = std::clamp(force, -200.0f, 200.0f);
         apply_central_impulse(this_to_other * force);
     }
 }

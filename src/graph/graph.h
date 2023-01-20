@@ -49,7 +49,7 @@ public:
         apply_attractions();
     }
 
-    void set_adjacency_list(const adjacency_list& adj);
+    void set_zero_based_adjacency_list(const adjacency_list& adj);
     void set_one_based_adjacency_list(const adjacency_list& adj);
     void reset_physics();
 

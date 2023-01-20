@@ -57,7 +57,7 @@ void Graph::reset()
     m_edges->set_nodes(&m_nodes, &m_adj);
 }
 
-void Graph::set_adjacency_list(const adjacency_list& adj)
+void Graph::set_zero_based_adjacency_list(const adjacency_list& adj)
 {
     int n = adj.size();
     m_adj = adjacency_list(n);

@@ -9,13 +9,16 @@
 
 #include <Godot.hpp>
 #include <Node2D.hpp>
+#include <RandomNumberGenerator.hpp>
 
 namespace godot {
 class GraphTest: public Node2D {
     GODOT_CLASS(GraphTest, Node2D)
 
 private:
-    Camera2DCtrl*  m_camera {nullptr};
+    Camera2DCtrl*          m_camera {nullptr};
+    RandomNumberGenerator* m_random;
+
     Graph*         m_graph {nullptr};
     adjacency_list m_adj;
 
@@ -30,7 +33,9 @@ public:
     void _process(float delta);
 
 private:
-    adjacency_list get_input() const;
+    void get_input();
+
+    void get_random_graph(int n);
 };
 
 } // namespace godot
