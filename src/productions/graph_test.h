@@ -15,8 +15,9 @@ class GraphTest: public Node2D {
     GODOT_CLASS(GraphTest, Node2D)
 
 private:
-    Camera2DCtrl* m_camera {nullptr};
-    Graph*        m_graph {nullptr};
+    Camera2DCtrl*  m_camera {nullptr};
+    Graph*         m_graph {nullptr};
+    adjacency_list m_adj;
 
 public:
     static void _register_methods();

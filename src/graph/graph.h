@@ -20,6 +20,8 @@ private:
     std::vector<GraphNode*> m_nodes;
     adjacency_list          m_adj;
     float                   m_node_radius;
+    float                   m_con_attr;
+    float                   m_uncon_attr;
     GraphEdges*             m_edges {nullptr};
 
 public:
@@ -28,8 +30,30 @@ public:
     Graph() {};
     ~Graph() {};
 
+    float get_con_attr() const
+    {
+        return m_con_attr;
+    }
+    float get_uncon_attr() const
+    {
+        return m_uncon_attr;
+    }
+    void set_con_attr(float attr)
+    {
+        m_con_attr = std::max(attr, 0.0f);
+        apply_attractions();
+    }
+    void set_uncon_attr(float attr)
+    {
+        m_uncon_attr = std::max(attr, 0.0f);
+        apply_attractions();
+    }
+
     void set_adjacency_list(const adjacency_list& adj);
     void set_one_based_adjacency_list(const adjacency_list& adj);
+    void reset_physics();
+
+    void reset();
 
     const std::vector<GraphNode*>* get_nodes() const
     {
@@ -53,6 +77,10 @@ private:
     {
         return Object::cast_to<GraphNode>(m_graph_node_scene->instance());
     }
+
+    void apply_attractions();
+
+    void free_nodes();
 };
 
 } // namespace godot

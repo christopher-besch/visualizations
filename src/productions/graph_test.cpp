@@ -18,9 +18,9 @@ void GraphTest::_init()
 
 void GraphTest::_ready()
 {
-    adjacency_list adj = get_input();
-    m_graph            = get_node<Graph>("Graph");
-    m_graph->set_one_based_adjacency_list(adj);
+    m_adj   = get_input();
+    m_graph = get_node<Graph>("Graph");
+    m_graph->set_one_based_adjacency_list(m_adj);
 
     m_camera = get_node<Camera2DCtrl>("Camera");
 }
@@ -31,6 +31,24 @@ void GraphTest::_process(float delta)
 
     if(input->is_action_just_pressed("recenter")) {
         m_camera->zoom_to_rect(m_graph->get_pleasant_bounding_rect());
+    }
+    if(input->is_action_just_pressed("reset_physics")) {
+        m_graph->reset_physics();
+    }
+    if(input->is_action_just_pressed("reset")) {
+        m_graph->reset();
+    }
+    if(input->is_action_just_pressed("increase_con_attr")) {
+        m_graph->set_con_attr(m_graph->get_con_attr() + 20);
+    }
+    if(input->is_action_just_pressed("increase_uncon_attr")) {
+        m_graph->set_uncon_attr(m_graph->get_uncon_attr() + 20);
+    }
+    if(input->is_action_just_pressed("decrease_con_attr")) {
+        m_graph->set_con_attr(m_graph->get_con_attr() - 20);
+    }
+    if(input->is_action_just_pressed("decrease_uncon_attr")) {
+        m_graph->set_uncon_attr(m_graph->get_uncon_attr() - 20);
     }
 }
 
