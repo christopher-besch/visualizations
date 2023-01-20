@@ -1,6 +1,8 @@
 #include "camera2d_ctrl.h"
+#include "Node.hpp"
 
 #include <Input.hpp>
+#include <Viewport.hpp>
 #include <algorithm>
 
 using namespace godot;
@@ -8,17 +10,16 @@ using namespace godot;
 void Camera2DCtrl::_register_methods()
 {
     register_method("_process", &Camera2DCtrl::_process);
+    register_property<Camera2DCtrl, float>("cur_zoom", &Camera2DCtrl::set_cur_zoom, &Camera2DCtrl::get_cur_zoom, 1.0);
 }
 
 void Camera2DCtrl::_init()
 {
     m_mouse_click_pos  = Vector2 {-1.0, -1.0};
     m_camera_click_pos = Vector2 {-1.0, -1.0};
-    // TODO: add property
-    m_zoom_factor = 1.1;
-    m_max_zoom    = 5.0;
-    m_min_zoom    = 0.01;
-    m_cur_zoom    = 1.0;
+    m_zoom_factor      = 1.1;
+    m_min_zoom         = 0.01;
+    m_cur_zoom         = 1.0;
 }
 
 void Camera2DCtrl::_process(float delta)
@@ -39,12 +40,20 @@ void Camera2DCtrl::_process(float delta)
         set_position(new_pos);
     }
 
-    if(input->is_action_just_released("zoom_in")) {
-        m_cur_zoom = std::clamp(m_cur_zoom * m_zoom_factor, m_min_zoom, m_max_zoom);
-        set_zoom(Vector2(m_cur_zoom, m_cur_zoom));
-    }
-    if(input->is_action_just_released("zoom_out")) {
-        m_cur_zoom = std::clamp(m_cur_zoom / m_zoom_factor, m_min_zoom, m_max_zoom);
-        set_zoom(Vector2(m_cur_zoom, m_cur_zoom));
-    }
+    if(input->is_action_just_released("zoom_in"))
+        set_cur_zoom(m_cur_zoom * m_zoom_factor);
+    if(input->is_action_just_released("zoom_out"))
+        set_cur_zoom(m_cur_zoom / m_zoom_factor);
+    set_zoom(Vector2(m_cur_zoom, m_cur_zoom));
+}
+
+void Camera2DCtrl::zoom_to_rect(std::pair<Vector2, Vector2> rect)
+{
+    Vector2 center  = rect.first;
+    Vector2 size    = rect.second;
+    Vector2 vp_size = get_viewport()->get_size();
+
+    float zoom = std::max(size.x / vp_size.x, size.y / vp_size.y);
+    set_cur_zoom(zoom);
+    set_position(center);
 }

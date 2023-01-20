@@ -27,6 +27,9 @@ public:
     void _init();
     void _ready();
     void _process(float delta);
+
+private:
+    adjacency_list get_input() const;
 };
 
 } // namespace godot
