@@ -19,6 +19,7 @@ private:
     Ref<PackedScene>        m_graph_node_scene;
     std::vector<GraphNode*> m_nodes;
     adjacency_list          m_adj;
+    distance_matrix         m_dist_mat;
     float                   m_node_radius;
     float                   m_con_attr;
     float                   m_uncon_attr;
@@ -49,11 +50,12 @@ public:
         apply_attractions();
     }
 
+    void reset_physics();
+    void reset();
+
     void set_zero_based_adjacency_list(const adjacency_list& adj);
     void set_one_based_adjacency_list(const adjacency_list& adj);
-    void reset_physics();
-
-    void reset();
+    void calc_dist_mat();
 
     const std::vector<GraphNode*>* get_nodes() const
     {
@@ -81,6 +83,8 @@ private:
     void apply_attractions();
 
     void free_nodes();
+
+    float calc_attr(int dist) const;
 };
 
 } // namespace godot

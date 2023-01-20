@@ -9,8 +9,6 @@
 #include <PackedScene.hpp>
 #include <ResourceLoader.hpp>
 
-#define prt(x) Godot::print(String((std::stringstream("") << x).str().c_str()))
-
 using namespace godot;
 
 void Graph::_register_methods()
@@ -35,6 +33,13 @@ void Graph::_init()
 void Graph::_ready()
 {
     m_edges = get_node<GraphEdges>("GraphEdges");
+}
+
+void Graph::reset_physics()
+{
+    Vector2 center = get_center_of_mass();
+    for(GraphNode* node: m_nodes)
+        node->set_target_pos(center);
 }
 
 void Graph::reset()
@@ -64,6 +69,7 @@ void Graph::set_zero_based_adjacency_list(const adjacency_list& adj)
     for(int i {0}; i < n; ++i)
         for(int o: adj[i])
             m_adj[i].insert(o);
+    calc_dist_mat();
     reset();
 }
 
@@ -76,6 +82,7 @@ void Graph::set_one_based_adjacency_list(const adjacency_list& adj)
             m_adj[i - 1].insert(o - 1);
         }
     }
+    calc_dist_mat();
     reset();
     for(int i {0}; i < m_nodes.size(); ++i) {
         prt(i + 1);
@@ -83,11 +90,57 @@ void Graph::set_one_based_adjacency_list(const adjacency_list& adj)
     }
 }
 
-void Graph::reset_physics()
+void Graph::calc_dist_mat()
 {
-    Vector2 center = get_center_of_mass();
-    for(GraphNode* node: m_nodes)
-        node->set_target_pos(center);
+    int n      = m_adj.size();
+    m_dist_mat = distance_matrix(n, std::vector<int>(n, 0));
+    for(int i {0}; i < n; ++i) {
+        for(int j {0}; j < n; ++j) {
+            if(i == j)
+                m_dist_mat[i][j] = 0;
+            else if(m_adj[i].count(j) != 0)
+                m_dist_mat[i][j] = 1;
+            else
+                m_dist_mat[i][j] = iinf;
+        }
+    }
+
+    for(int k {0}; k < n; ++k) {
+        for(int i {0}; i < n; ++i) {
+            for(int j {0}; j < n; ++j) {
+                m_dist_mat[i][j] = std::min(m_dist_mat[i][j], m_dist_mat[i][k] + m_dist_mat[k][j]);
+            }
+        }
+    }
+
+    // // debug
+    // std::stringstream out;
+    // for(int i {0}; i < n; ++i) {
+    //     out << i << ": ";
+    //     for(int e: m_adj[i]) {
+    //         out << e << ", ";
+    //     }
+    //     out << std::endl;
+    // }
+    // prt(out.str());
+
+    // out = std::stringstream();
+    // out << "  \t";
+    // for(int j {0}; j < n; ++j) {
+    //     out << j << "\t";
+    // }
+    // out << std::endl;
+    // for(int i {0}; i < n; ++i) {
+    //     out << i << " :\t";
+    //     for(int j {0}; j < n; ++j) {
+    //         int val = m_dist_mat[i][j];
+    //         val     = val == iinf ? -2 : val;
+    //         out << val << "\t";
+    //     }
+    //     out << std::endl;
+    // }
+    // prt(out.str());
+    // // debug
 }
 
 Vector2 Graph::get_center_of_mass() const
@@ -121,10 +174,7 @@ void Graph::apply_attractions()
     // tell nodes who the other nodes are and how to attract
     for(int i {0}; i < m_nodes.size(); ++i) {
         for(int o {0}; o < m_nodes.size(); ++o) {
-            if(m_adj[i].count(o) != 0)
-                m_nodes[i]->set_attraction(o, m_con_attr);
-            else
-                m_nodes[i]->set_attraction(o, m_uncon_attr);
+            m_nodes[i]->set_attraction(o, calc_attr(m_dist_mat[i][o]));
         }
     }
 }
@@ -135,4 +185,15 @@ void Graph::free_nodes()
         m_nodes[i]->queue_free();
     }
     m_nodes.clear();
+}
+
+float Graph::calc_attr(int dist) const
+{
+    if(dist == 0)
+        return 0.0;
+
+    // -> 0.0 (unconnected)
+    // -> 1.0 (connected)
+    float s = 1.0 / static_cast<float>(dist);
+    return (1.0 - s) * m_uncon_attr + s * m_con_attr;
 }
