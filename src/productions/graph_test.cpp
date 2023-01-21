@@ -24,11 +24,13 @@ void GraphTest::_ready()
     m_graph = get_node<Graph>("Graph");
     m_graph->set_con_attr(250);
     m_graph->set_uncon_attr(400);
+    m_graph->set_con_attr(500);
+    m_graph->set_uncon_attr(1000);
 
     // get_input();
     // m_graph->set_one_based_adjacency_list(m_adj);
 
-    get_random_graph(30);
+    get_random_graph(500);
     m_graph->set_zero_based_adjacency_list(m_adj);
 
     m_camera = get_node<Camera2DCtrl>("Camera");
@@ -45,7 +47,7 @@ void GraphTest::_process(float delta)
         m_graph->reset_physics();
     }
     if(input->is_action_just_pressed("reset")) {
-        get_random_graph(50);
+        get_random_graph(1000);
         m_graph->set_zero_based_adjacency_list(m_adj);
     }
     if(input->is_action_just_pressed("increase_con_attr")) {
@@ -79,10 +81,10 @@ void GraphTest::get_input()
 
 void GraphTest::get_random_graph(int n)
 {
-    m_adj = adjacency_list(n);
-
-    int a = static_cast<int>(std::sqrt(n));
-
+    int y_max = static_cast<int>(std::sqrt(n));
+    int y_cut = m_random->randi_range(0, y_max - 1);
+    m_adj     = adjacency_list(n);
+    // ([0, n/y_max - 1], [0, y_max - 1])
     std::vector<Vector2> pos(n);
 
     int x = 0;
@@ -90,7 +92,7 @@ void GraphTest::get_random_graph(int n)
     for(int i {0}; i < n; ++i) {
         pos[i] = Vector2(x, y);
         ++y;
-        if(y > a) {
+        if(y >= y_max) {
             y = 0;
             ++x;
         }
@@ -100,15 +102,18 @@ void GraphTest::get_random_graph(int n)
         for(int b {0}; b < n; ++b) {
             if(a == b)
                 continue;
+            // don't go over cut -> produce two cluster
+            if(pos[a].y < y_cut != pos[b].y < y_cut)
+                continue;
             float len = (pos[a] - pos[b]).length();
             if(len < 2 && !m_random->randi_range(0, 5)) {
                 m_adj[a].insert(b);
                 m_adj[b].insert(a);
             }
-            // if(len > 2 && len <= 4 && !m_random->randi_range(0, 7)) {
-            //     m_adj[a].insert(b);
-            //     m_adj[b].insert(a);
-            // }
+            if(len > 2 && len <= 4 && !m_random->randi_range(0, 15)) {
+                m_adj[a].insert(b);
+                m_adj[b].insert(a);
+            }
             // if(len > 4 && len <= 8 && !m_random->randi_range(0, 14)) {
             //     m_adj[a].insert(b);
             //     m_adj[b].insert(a);

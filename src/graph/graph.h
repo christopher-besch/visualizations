@@ -20,6 +20,7 @@ private:
     std::vector<GraphNode*> m_nodes;
     adjacency_list          m_adj;
     distance_matrix         m_dist_mat;
+    std::vector<int>        m_order;
     float                   m_node_radius;
     float                   m_con_attr;
     float                   m_uncon_attr;
@@ -41,11 +42,13 @@ public:
     }
     void set_con_attr(float attr)
     {
+        prt("con: " << m_con_attr << " uncon: " << m_uncon_attr);
         m_con_attr = std::max(attr, 0.0f);
         apply_attractions();
     }
     void set_uncon_attr(float attr)
     {
+        prt("con: " << m_con_attr << " uncon: " << m_uncon_attr);
         m_uncon_attr = std::max(attr, 0.0f);
         apply_attractions();
     }
@@ -56,6 +59,7 @@ public:
     void set_zero_based_adjacency_list(const adjacency_list& adj);
     void set_one_based_adjacency_list(const adjacency_list& adj);
     void calc_dist_mat();
+    void calc_order();
 
     const std::vector<GraphNode*>* get_nodes() const
     {
@@ -85,6 +89,8 @@ private:
     void free_nodes();
 
     float calc_attr(int dist) const;
+
+    void sort_dfs(std::vector<bool>& visited, int cur);
 };
 
 } // namespace godot

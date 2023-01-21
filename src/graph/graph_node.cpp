@@ -70,8 +70,8 @@ void GraphNode::_physics_process(float delta)
             continue;
 
         float force = real_distance * real_distance / target_distance - target_distance * target_distance / real_distance;
-        // scale with inverse node amount
-        force /= std::sqrt(m_all_nodes->size());
+        // scale with inverse amount of other nodes
+        force /= m_all_nodes->size() - 1;
         apply_central_impulse(this_to_other * force);
     }
 }
