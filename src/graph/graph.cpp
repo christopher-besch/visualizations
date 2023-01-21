@@ -45,11 +45,19 @@ void Graph::reset_physics()
 void Graph::reset()
 {
     int n = m_adj.size();
+
+    // allign nodes in circle at first
+    float   circumferance = n * m_node_radius * 4;
+    float   angular_step  = (2 * M_PI) / n;
+    float   radius        = circumferance / (2 * M_PI);
+    Vector2 radial        = Vector2::ONE * radius;
+
     // generate nodes
     free_nodes();
     m_nodes.resize(n, nullptr);
     for(int i {0}; i < n; ++i) {
         m_nodes[i] = instance_graph_node();
+        m_nodes[i]->set_target_pos(radial.rotated(angular_step * i));
         m_nodes[i]->set_text(std::to_string(i).c_str());
         m_nodes[i]->set_radius(m_node_radius);
         add_child(m_nodes[i]);
@@ -85,7 +93,6 @@ void Graph::set_one_based_adjacency_list(const adjacency_list& adj)
     calc_dist_mat();
     reset();
     for(int i {0}; i < m_nodes.size(); ++i) {
-        prt(i + 1);
         m_nodes[i]->set_text(std::to_string(i + 1).c_str());
     }
 }

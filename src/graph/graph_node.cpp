@@ -65,16 +65,13 @@ void GraphNode::_physics_process(float delta)
         float   real_distance = this_to_other.length();
         this_to_other /= real_distance;
 
-        float force;
-        if(real_distance < 1.0) {
-            force         = 1.0;
-            this_to_other = Vector2::UP.rotated(m_random->randf_range(0, 2 * M_PI));
-        }
-        else
-            force = real_distance * real_distance / target_distance - target_distance * target_distance / real_distance;
+        // touching? -> let physics engine care about pushing apart -> keeps everything from exploding
+        if(real_distance < m_radius + other->m_radius - 2.0f)
+            continue;
 
-        // keep everything from exploding
-        force = std::clamp(force, -200.0f, 200.0f);
+        float force = real_distance * real_distance / target_distance - target_distance * target_distance / real_distance;
+        // scale with inverse node amount
+        force /= std::sqrt(m_all_nodes->size());
         apply_central_impulse(this_to_other * force);
     }
 }
