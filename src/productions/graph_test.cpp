@@ -30,7 +30,7 @@ void GraphTest::_ready()
     // get_input();
     // m_graph->set_one_based_adjacency_list(m_adj);
 
-    get_random_graph(30);
+    get_random_graph(100);
     m_graph->set_zero_based_adjacency_list(m_adj);
 
     m_camera = get_node<Camera2DCtrl>("Camera");
@@ -68,6 +68,45 @@ void GraphTest::_process(float delta)
     }
     if(input->is_action_just_pressed("quit"))
         quick_exit(0);
+
+    auto    adj       = m_graph->get_adj();
+    auto    dist_mat  = m_graph->get_dist_mat();
+    Vector2 mouse_pos = get_local_mouse_position();
+    for(int i {0}; i < adj.size(); ++i) {
+        GraphNode* node = m_graph->get_node(i);
+        node->set_fill_color(Color(1.0, 1.0, 1.0));
+    }
+    for(int i {0}; i < adj.size(); ++i)
+        for(int j {0}; j < adj.size(); ++j) {
+            m_graph->set_edge_color(i, j, Color(1.0, 1.0, 1.0));
+        }
+    for(int i {0}; i < adj.size(); ++i) {
+        GraphNode* node = m_graph->get_node(i);
+        if((node->get_position() - mouse_pos).length() < node->get_radius()) {
+            node->set_fill_color(Color(0.2, 0.2, 0.2));
+
+            for(int j {0}; j < adj.size(); ++j) {
+                GraphNode* other_node = m_graph->get_node(j);
+                if(dist_mat[i][j] == 1) {
+                    other_node->set_fill_color(Color(1.0, 0.0, 0.0));
+                    m_graph->set_edge_color(i, j, Color(1.0, 0.0, 0.0));
+                    m_graph->set_edge_color(j, i, Color(1.0, 0.0, 0.0));
+                }
+                else if(dist_mat[i][j] == 2) {
+                    other_node->set_fill_color(Color(0.8, 0.0, 0.8));
+                    m_graph->set_edge_color(i, j, Color(0.8, 0.0, 0.8));
+                    m_graph->set_edge_color(j, i, Color(0.8, 0.0, 0.8));
+                }
+                else if(dist_mat[i][j] == 3) {
+                    other_node->set_fill_color(Color(0.1, 0.7, 0.2));
+                    m_graph->set_edge_color(i, j, Color(0.1, 0.7, 0.2));
+                    m_graph->set_edge_color(j, i, Color(0.1, 0.7, 0.2));
+                }
+            }
+
+            return;
+        }
+    }
 }
 
 void GraphTest::get_input()

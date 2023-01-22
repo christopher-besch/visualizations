@@ -1,9 +1,12 @@
 #pragma once
 
+#include "edge_style.h"
 #include "graph_node.h"
 #include "helper.h"
 
 #include <set>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include <Godot.hpp>
@@ -18,6 +21,8 @@ private:
     Ref<PackedScene> m_graph_node_scene;
 
     std::vector<GraphNode*> m_nodes;
+    // [from][to]
+    std::vector<std::vector<EdgeStyle>> m_edge_styles;
 
     adjacency_list   m_adj;
     distance_matrix  m_dist_mat;
@@ -38,10 +43,18 @@ public:
     void _process();
     void _draw();
 
-    GraphNode* get_nodes(int idx) { return m_nodes[idx]; }
-    float      get_con_attr() const { return m_con_attr; }
-    float      get_uncon_attr() const { return m_uncon_attr; }
-    void       set_con_attr(float attr)
+    Color get_edge_color(int from, int to) const { return m_edge_styles[from][to].color; }
+    float get_edge_width(int from, int to) const { return m_edge_styles[from][to].width; }
+    void  set_edge_color(int from, int to, Color color) { m_edge_styles[from][to].color = color; }
+    void  set_edge_width(int from, int to, float width) { m_edge_styles[from][to].width = width; }
+
+    const adjacency_list&  get_adj() const { return m_adj; }
+    const distance_matrix& get_dist_mat() const { return m_dist_mat; }
+    GraphNode*             get_node(int idx) { return m_nodes[idx]; }
+
+    float get_con_attr() const { return m_con_attr; }
+    float get_uncon_attr() const { return m_uncon_attr; }
+    void  set_con_attr(float attr)
     {
         m_con_attr = std::max(attr, 0.0f);
         apply_attractions();
@@ -75,7 +88,7 @@ private:
     {
         return Object::cast_to<GraphNode>(m_graph_node_scene->instance());
     }
-    void free_nodes();
+    void free_nodes_edges();
     void apply_attractions();
 
     float calc_attr(int dist) const;

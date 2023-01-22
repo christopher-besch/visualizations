@@ -40,17 +40,19 @@ void Graph::_draw()
 {
     for(int i {0}; i < m_nodes.size(); ++i) {
         for(int o: m_adj[i]) {
-            draw_line(m_nodes[i]->get_position(), m_nodes[o]->get_position(), Color(1.0, 1.0, 1.0, 1.0), 2.0, true);
+            EdgeStyle& style = m_edge_styles[i][o];
+            draw_line(m_nodes[i]->get_position(), m_nodes[o]->get_position(), style.color, style.width, true);
         }
     }
 }
 
-void Graph::free_nodes()
+void Graph::free_nodes_edges()
 {
     for(int i {0}; i < m_nodes.size(); ++i) {
         m_nodes[i]->queue_free();
     }
     m_nodes.clear();
+    m_edge_styles.clear();
 }
 
 void Graph::apply_attractions()
@@ -67,8 +69,9 @@ void Graph::reset()
 {
     int n = m_adj.size();
     // generate nodes
-    free_nodes();
+    free_nodes_edges();
     m_nodes.resize(n, nullptr);
+    m_edge_styles.resize(n, std::vector<EdgeStyle>(n));
     for(int i {0}; i < n; ++i) {
         m_nodes[i] = instance_graph_node();
         m_nodes[i]->set_radius(m_node_radius);
