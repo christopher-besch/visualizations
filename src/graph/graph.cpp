@@ -14,11 +14,6 @@ using namespace godot;
 void Graph::_register_methods()
 {
     register_method("_ready", &Graph::_ready);
-    register_method("get_center_of_mass", &Graph::get_center_of_mass);
-    register_method("recalculate_pos", &Graph::reset_physics);
-    register_method("reset", &Graph::reset);
-    register_property<Graph, float>("con_attr", &Graph::set_con_attr, &Graph::get_con_attr, 150.0);
-    register_property<Graph, float>("uncon_attr", &Graph::set_uncon_attr, &Graph::get_uncon_attr, 300.0);
 }
 
 void Graph::_init()

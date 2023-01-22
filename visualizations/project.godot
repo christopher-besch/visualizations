@@ -14,6 +14,10 @@ config/name="Visualizations"
 run/main_scene="res://productions/graph_test.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/fullscreen=true
+
 [global]
 
 alias=false

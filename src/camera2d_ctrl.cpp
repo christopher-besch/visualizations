@@ -10,7 +10,6 @@ using namespace godot;
 void Camera2DCtrl::_register_methods()
 {
     register_method("_process", &Camera2DCtrl::_process);
-    register_property<Camera2DCtrl, float>("cur_zoom", &Camera2DCtrl::set_cur_zoom, &Camera2DCtrl::get_cur_zoom, 1.0);
 }
 
 void Camera2DCtrl::_init()

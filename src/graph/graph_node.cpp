@@ -11,11 +11,6 @@ void GraphNode::_register_methods()
     register_method("_draw", &GraphNode::_draw);
     register_method("_physics_process", &GraphNode::_physics_process);
     register_method("_integrate_forces", &GraphNode::_integrate_forces);
-    register_method("set_target_pos", &GraphNode::set_target_pos);
-    register_property<GraphNode, float>("radius", &GraphNode::set_radius, &GraphNode::get_radius, 20.0);
-    register_property<GraphNode, Color>("fill_color", &GraphNode::set_fill_color, &GraphNode::get_fill_color, Color(0.0, 0.0, 0.0));
-    register_property<GraphNode, Color>("stroke_color", &GraphNode::set_stroke_color, &GraphNode::get_stroke_color, Color(1.0, 1.0, 1.0));
-    register_property<GraphNode, String>("text", &GraphNode::set_text, &GraphNode::get_text, "Text here");
 }
 
 void GraphNode::_init()
