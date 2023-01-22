@@ -14,6 +14,8 @@ using namespace godot;
 void Graph::_register_methods()
 {
     register_method("_ready", &Graph::_ready);
+    register_method("_process", &Graph::_process);
+    register_method("_draw", &Graph::_draw);
 }
 
 void Graph::_init()
@@ -27,7 +29,20 @@ void Graph::_init()
 
 void Graph::_ready()
 {
-    m_edges = get_node<GraphEdges>("GraphEdges");
+}
+
+void Graph::_process()
+{
+    update();
+}
+
+void Graph::_draw()
+{
+    for(int i {0}; i < m_nodes.size(); ++i) {
+        for(int o: m_adj[i]) {
+            draw_line(m_nodes[i]->get_position(), m_nodes[o]->get_position(), Color(1.0, 1.0, 1.0, 1.0), 2.0, true);
+        }
+    }
 }
 
 void Graph::free_nodes()
@@ -68,7 +83,6 @@ void Graph::reset()
     position_nodes();
 
     apply_attractions();
-    m_edges->set_nodes(&m_nodes, &m_adj);
 }
 
 void Graph::set_zero_based_adjacency_list(const adjacency_list& adj)

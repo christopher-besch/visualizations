@@ -1,6 +1,5 @@
 #pragma once
 
-#include "graph_edges.h"
 #include "graph_node.h"
 #include "helper.h"
 
@@ -19,7 +18,6 @@ private:
     Ref<PackedScene> m_graph_node_scene;
 
     std::vector<GraphNode*> m_nodes;
-    GraphEdges*             m_edges {nullptr};
 
     adjacency_list   m_adj;
     distance_matrix  m_dist_mat;
@@ -37,6 +35,8 @@ public:
 
     void _init();
     void _ready();
+    void _process();
+    void _draw();
 
     GraphNode* get_nodes(int idx) { return m_nodes[idx]; }
     float      get_con_attr() const { return m_con_attr; }
