@@ -24,13 +24,13 @@ void GraphTest::_ready()
     m_graph = get_node<Graph>("Graph");
     m_graph->set_con_attr(250);
     m_graph->set_uncon_attr(400);
-    m_graph->set_con_attr(500);
-    m_graph->set_uncon_attr(1000);
+    // m_graph->set_con_attr(500);
+    // m_graph->set_uncon_attr(1000);
 
     // get_input();
     // m_graph->set_one_based_adjacency_list(m_adj);
 
-    get_random_graph(500);
+    get_random_graph(30);
     m_graph->set_zero_based_adjacency_list(m_adj);
 
     m_camera = get_node<Camera2DCtrl>("Camera");
@@ -44,24 +44,30 @@ void GraphTest::_process(float delta)
         m_camera->zoom_to_rect(m_graph->get_pleasant_bounding_rect());
     }
     if(input->is_action_just_pressed("reset_physics")) {
-        m_graph->reset_physics();
+        m_graph->position_nodes();
     }
     if(input->is_action_just_pressed("reset")) {
-        get_random_graph(1000);
+        get_random_graph(30);
         m_graph->set_zero_based_adjacency_list(m_adj);
     }
     if(input->is_action_just_pressed("increase_con_attr")) {
+        prt("con: " << m_graph->get_con_attr() << " uncon: " << m_graph->get_uncon_attr());
         m_graph->set_con_attr(m_graph->get_con_attr() + 20);
     }
     if(input->is_action_just_pressed("increase_uncon_attr")) {
+        prt("con: " << m_graph->get_con_attr() << " uncon: " << m_graph->get_uncon_attr());
         m_graph->set_uncon_attr(m_graph->get_uncon_attr() + 20);
     }
     if(input->is_action_just_pressed("decrease_con_attr")) {
+        prt("con: " << m_graph->get_con_attr() << " uncon: " << m_graph->get_uncon_attr());
         m_graph->set_con_attr(m_graph->get_con_attr() - 20);
     }
     if(input->is_action_just_pressed("decrease_uncon_attr")) {
+        prt("con: " << m_graph->get_con_attr() << " uncon: " << m_graph->get_uncon_attr());
         m_graph->set_uncon_attr(m_graph->get_uncon_attr() - 20);
     }
+    if(input->is_action_just_pressed("quit"))
+        quick_exit(0);
 }
 
 void GraphTest::get_input()

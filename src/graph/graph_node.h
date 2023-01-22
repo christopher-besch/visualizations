@@ -22,11 +22,11 @@ class GraphNode: public RigidBody2D {
 private:
     RandomNumberGenerator* m_random;
 
-    float  m_radius;
-    float  m_width;
-    Color  m_fill_color;
-    Color  m_stroke_color;
-    String m_text;
+    float  m_radius {20.0f};
+    float  m_width {2.0f};
+    Color  m_fill_color {Color(1.0, 1.0, 1.0)};
+    Color  m_stroke_color {Color(0.0, 0.0, 0.0)};
+    String m_text {""};
 
     Label*            m_label {nullptr};
     CollisionShape2D* m_collision {nullptr};
@@ -45,11 +45,18 @@ public:
     GraphNode() {}
     ~GraphNode() {}
 
+    void _init();
+    void _ready();
+    void _draw();
+    void _physics_process(float delta);
+    void _integrate_forces(Physics2DDirectBodyState* state);
+
     float  get_radius() const { return m_radius; }
     Color  get_fill_color() const { return m_fill_color; }
     Color  get_stroke_color() const { return m_stroke_color; }
     String get_text() const { return m_text; }
 
+    // only to be used by Graph
     void set_radius(float radius)
     {
         m_radius = radius;
@@ -84,16 +91,11 @@ public:
         m_attractions = std::vector<float>(all_nodes->size(), 0.0);
     }
 
+    // set attraction attr between this node and the one of index idx
     void set_attraction(int idx, float attr)
     {
         m_attractions[idx] = attr;
     }
-
-    void _init();
-    void _ready();
-    void _draw();
-    void _physics_process(float delta);
-    void _integrate_forces(Physics2DDirectBodyState* state);
 };
 
 } // namespace godot

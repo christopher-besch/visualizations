@@ -15,21 +15,15 @@ void GraphNode::_register_methods()
 
 void GraphNode::_init()
 {
-    m_radius     = 20.0;
-    m_width      = 2.0;
-    m_fill_color = Color(1.0, 1.0, 1.0);
-    m_fill_color = Color(1.0, 1.0, 1.0);
-    m_text       = "Text here";
-
     m_random = RandomNumberGenerator::_new();
     m_random->randomize();
+    m_collision_shape = CircleShape2D::_new();
 }
 
 void GraphNode::_ready()
 {
-    m_label           = get_node<Label>("Label");
-    m_collision       = get_node<CollisionShape2D>("Collision");
-    m_collision_shape = CircleShape2D::_new();
+    m_label     = get_node<Label>("Label");
+    m_collision = get_node<CollisionShape2D>("Collision");
 }
 
 void GraphNode::_draw()
