@@ -30,7 +30,7 @@ void GraphTest::_ready()
     // get_input();
     // m_graph->set_one_based_adjacency_list(m_adj);
 
-    get_random_graph(100);
+    get_random_graph(30);
     m_graph->set_zero_based_adjacency_list(m_adj);
 
     m_camera = get_node<Camera2DCtrl>("Camera");

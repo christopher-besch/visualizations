@@ -23,7 +23,7 @@ void Graph::position_nodes()
     // go through order and set pos in circle
     for(int pos_idx {0}; pos_idx < n; ++pos_idx) {
         int node_idx = m_order[pos_idx];
-        m_nodes[node_idx]->set_target_pos(radial.rotated(angular_step * pos_idx));
+        m_nodes[node_idx]->set_target_pos(get_position() + radial.rotated(angular_step * pos_idx));
     }
 }
 
