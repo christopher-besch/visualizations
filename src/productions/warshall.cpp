@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include <Label.hpp>
+#include <OS.hpp>
 #include <Viewport.hpp>
 
 using namespace godot;
@@ -13,6 +14,7 @@ void Warshall::_register_methods()
 {
     register_method("_ready", &Warshall::_ready);
     register_method("_process", &Warshall::_process);
+    register_method("toggle_fullscreen", &Warshall::toggle_fullscreen);
     register_method("reset", &Warshall::reset);
     register_method("next_slide", &Warshall::next_slide);
     register_method("next_k", &Warshall::next_k);
@@ -35,6 +37,7 @@ void Warshall::_ready()
     m_next_path_button         = get_node<Button>("Sidebar/SlideControl/NextPath");
     m_next_k_button            = get_node<Button>("Sidebar/SlideControl/NextK");
     m_next_slide_button        = get_node<Button>("Sidebar/SlideControl/NextSlide");
+    m_toggle_fullscreen_button = get_node<Button>("Sidebar/SlideControl/ToggleFullscreen");
     m_reset_button             = get_node<Button>("Sidebar/ResetControl/ResetButton");
     m_node_num_input           = get_node<SpinBox>("Sidebar/ResetControl/NodeNumInput");
 
@@ -45,6 +48,12 @@ void Warshall::_ready()
     create_matrix();
 
     reset();
+}
+
+void Warshall::toggle_fullscreen()
+{
+    OS* os = OS::get_singleton();
+    os->set_window_fullscreen(!os->is_window_fullscreen());
 }
 
 void Warshall::_process(float delta)
@@ -155,7 +164,7 @@ void Warshall::slide_0()
     m_next_slide_button->set_disabled(false);
     m_next_path_button->set_disabled(true);
     m_next_k_button->set_disabled(true);
-    m_text->set_bbcode(get_slide_text(0));
+    m_text->set_bbcode(slide_0_text);
 
     const matrix& dist_mat = m_graph->get_dist_mat();
     int           n        = dist_mat.size();
@@ -172,7 +181,7 @@ void Warshall::slide_0()
 void Warshall::slide_1()
 {
     // distance matrix
-    m_text->set_bbcode(get_slide_text(1));
+    m_text->set_bbcode(slide_1_text);
 
     const matrix& dist_mat = m_graph->get_dist_mat();
     int           n        = dist_mat.size();
@@ -203,7 +212,7 @@ void Warshall::slide_2()
     m_next_slide_button->set_disabled(true);
     m_next_path_button->set_disabled(false);
     m_next_k_button->set_disabled(false);
-    m_text->set_bbcode(get_slide_text(2));
+    m_text->set_bbcode(slide_2_text);
 
     m_k = 0;
     m_i = 0;
@@ -215,7 +224,7 @@ void Warshall::slide_3()
     m_next_slide_button->set_disabled(false);
     m_next_path_button->set_disabled(true);
     m_next_k_button->set_disabled(true);
-    m_text->set_bbcode(get_slide_text(3));
+    m_text->set_bbcode(slide_3_text);
 
     m_k = -1;
     m_i = -1;

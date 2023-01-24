@@ -72,6 +72,12 @@ margin_right = 260.0
 margin_bottom = 20.0
 text = "Next Slide"
 
+[node name="ToggleFullscreen" type="Button" parent="Sidebar/SlideControl"]
+margin_left = 287.0
+margin_right = 410.0
+margin_bottom = 20.0
+text = "Toggle Fullscreen"
+
 [node name="ResetControl" type="Position2D" parent="Sidebar"]
 position = Vector2( 10, 352.071 )
 
@@ -114,4 +120,5 @@ current = true
 [connection signal="pressed" from="Sidebar/SlideControl/NextPath" to="." method="next_path"]
 [connection signal="pressed" from="Sidebar/SlideControl/NextK" to="." method="next_k"]
 [connection signal="pressed" from="Sidebar/SlideControl/NextSlide" to="." method="next_slide"]
+[connection signal="pressed" from="Sidebar/SlideControl/ToggleFullscreen" to="." method="toggle_fullscreen"]
 [connection signal="pressed" from="Sidebar/ResetControl/ResetButton" to="." method="reset"]
