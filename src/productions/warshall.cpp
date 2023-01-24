@@ -144,12 +144,6 @@ void Warshall::next_slide()
     case 3:
         slide_3();
         break;
-    case 4:
-        slide_4();
-        break;
-    case 5:
-        slide_5();
-        break;
     default:
         throw "invalid slide id";
     }
@@ -226,17 +220,6 @@ void Warshall::slide_3()
     m_k = -1;
     m_i = -1;
     m_j = -1;
-}
-
-void Warshall::slide_4()
-{
-    // updating next node matrix
-    m_text->set_bbcode(get_slide_text(4));
-}
-void Warshall::slide_5()
-{
-    // conclusion
-    m_text->set_bbcode(get_slide_text(5));
     m_next_slide_button->set_disabled(true);
 }
 

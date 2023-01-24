@@ -63,8 +63,6 @@ private:
     void slide_1();
     void slide_2();
     void slide_3();
-    void slide_4();
-    void slide_5();
 
     void create_matrix();
     void reset_label_matrix();
