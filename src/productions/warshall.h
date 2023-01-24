@@ -33,11 +33,17 @@ private:
 
     float               m_sidebar_width {-1.0f};
     int                 m_cur_slide {-1};
-    matrix_temp<Label*> m_matrix;
+    matrix              m_dist_matrix;
+    matrix              m_path_matrix;
+    matrix_temp<Label*> m_label_matrix;
     std::vector<Label*> m_matrix_cols;
     std::vector<Label*> m_matrix_rows;
     int                 m_matrix_size {32};
     Color               m_hover_color = Color(1.0, 0.0, 0.0);
+
+    int m_k {-1};
+    int m_i {-1};
+    int m_j {-1};
 
 public:
     static void _register_methods();
@@ -61,16 +67,20 @@ private:
     void slide_5();
 
     void create_matrix();
-    void reset_matrix();
+    void reset_label_matrix();
     void reset_matrix_styles();
 
-    void set_mat_val(int i, int j, int val)
+    void set_label_mat_val(int i, int j, int val)
     {
-        m_matrix[i][j]->set_text(std::to_string(val).c_str());
+        m_label_matrix[i][j]->set_text(std::to_string(val).c_str());
+    }
+    void set_mat_inf(int i, int j)
+    {
+        m_label_matrix[i][j]->set_text("inf");
     }
     void set_mat_style(int i, int j, Color color)
     {
-        m_matrix[i][j]->add_color_override("font_color", color);
+        m_label_matrix[i][j]->add_color_override("font_color", color);
     }
     void set_mat_row_style(int j, Color color)
     {
@@ -82,6 +92,17 @@ private:
     }
 
     String get_slide_text(int slide_idx);
+
+    bool is_label_hovered(const Label* label) const;
+    void color_path(int i, int j, Color color);
+    void color_node(int i, Color color);
+
+    void next_k();
+    void next_path();
+    // return true when everything done
+    bool next_path_without_next_slide();
+
+    std::vector<int> get_path(int start, int target);
 };
 
 } // namespace godot

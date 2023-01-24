@@ -111,5 +111,7 @@ current = true
 
 [node name="Graph" parent="GraphViewportContainer/GraphViewport" instance=ExtResource( 2 )]
 
+[connection signal="pressed" from="Sidebar/SlideControl/NextPath" to="." method="next_path"]
+[connection signal="pressed" from="Sidebar/SlideControl/NextK" to="." method="next_k"]
 [connection signal="pressed" from="Sidebar/SlideControl/NextSlide" to="." method="next_slide"]
 [connection signal="pressed" from="Sidebar/ResetControl/ResetButton" to="." method="reset"]

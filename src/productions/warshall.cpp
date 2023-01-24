@@ -15,6 +15,8 @@ void Warshall::_register_methods()
     register_method("_process", &Warshall::_process);
     register_method("reset", &Warshall::reset);
     register_method("next_slide", &Warshall::next_slide);
+    register_method("next_k", &Warshall::next_k);
+    register_method("next_path", &Warshall::next_path);
 }
 
 void Warshall::_init()
@@ -71,33 +73,57 @@ void Warshall::_process(float delta)
     if(input->is_action_just_pressed("quit"))
         quick_exit(0);
 
-    // handle mouse hovering
+    // set node and edges color
     m_graph->reset_styles();
     reset_matrix_styles();
-    // set node and edges color
+    // hovering over node or side of matrix
     int i = m_graph->get_hovered_node();
+    for(int idx {0}; idx < m_graph->get_adj().size(); ++idx)
+        if(is_label_hovered(m_matrix_rows[idx])) {
+            i = idx;
+            break;
+        }
+    for(int idx {0}; idx < m_graph->get_adj().size(); ++idx)
+        if(is_label_hovered(m_matrix_cols[idx])) {
+            i = idx;
+            break;
+        }
+
     if(i != -1) {
         GraphNode* node = m_graph->get_node(i);
-        node->set_fill_color(m_hover_color);
-        set_mat_row_style(i, m_hover_color);
-        set_mat_col_style(i, m_hover_color);
+        color_node(i, m_hover_color);
         for(int j: m_graph->get_adj()[i]) {
-            m_graph->set_edge_color(i, j, m_hover_color);
-            m_graph->set_edge_color(j, i, m_hover_color);
-            set_mat_style(i, j, m_hover_color);
-            set_mat_style(j, i, m_hover_color);
+            color_path(i, j, m_hover_color);
         }
     }
+
+    // hovering over element in matrix -> color path
+    for(int i {0}; i < m_graph->get_adj().size(); ++i) {
+        for(int j {0}; j < m_graph->get_adj().size(); ++j) {
+            if(is_label_hovered(m_label_matrix[i][j])) {
+                color_path(i, j, m_hover_color);
+                goto done;
+            }
+        }
+    }
+done:;
+
+    // color m_k if valid
+    if(m_k != -1 && m_k < m_graph->get_adj().size())
+        color_node(m_k, Color(0.0, 0.0, 1.0));
 }
 
 void Warshall::reset()
 {
-    int n = m_node_num_input->get_value();
+    int n         = m_node_num_input->get_value();
+    m_dist_matrix = matrix(n, std::vector<int>(n, iinf));
+    m_path_matrix = matrix(n, std::vector<int>(n, -1));
     m_graph->set_con_attr(std::max(150, 10 * n));
     m_graph->set_uncon_attr(std::max(300, 20 * n));
     m_graph->set_random_adj(n);
     m_graph->set_default_labels();
     m_cur_slide = -1;
+    reset_label_matrix();
 
     next_slide();
 }
@@ -140,13 +166,12 @@ void Warshall::slide_0()
     const matrix& dist_mat = m_graph->get_dist_mat();
     int           n        = dist_mat.size();
 
-    reset_matrix();
     for(int i {0}; i < n; ++i) {
         for(int j {0}; j < n; ++j) {
             if(dist_mat[i][j] == 1)
-                set_mat_val(i, j, 1);
+                set_label_mat_val(i, j, 1);
             else
-                set_mat_val(i, j, 0);
+                set_label_mat_val(i, j, 0);
         }
     }
 }
@@ -154,17 +179,55 @@ void Warshall::slide_1()
 {
     // distance matrix
     m_text->set_bbcode(get_slide_text(1));
+
+    const matrix& dist_mat = m_graph->get_dist_mat();
+    int           n        = dist_mat.size();
+
+    for(int i {0}; i < n; ++i) {
+        for(int j {0}; j < n; ++j) {
+            if(i == j) {
+                set_label_mat_val(i, j, 0);
+                m_dist_matrix[i][j] = 0;
+                m_path_matrix[i][j] = j;
+            }
+            else if(dist_mat[i][j] == 1) {
+                set_label_mat_val(i, j, 1);
+                m_dist_matrix[i][j] = 1;
+                m_path_matrix[i][j] = j;
+            }
+            else {
+                set_mat_inf(i, j);
+                m_dist_matrix[i][j] = iinf;
+                m_path_matrix[i][j] = -1;
+            }
+        }
+    }
 }
 void Warshall::slide_2()
 {
     // updating distance matrix
+    m_next_slide_button->set_disabled(true);
+    m_next_path_button->set_disabled(false);
+    m_next_k_button->set_disabled(false);
     m_text->set_bbcode(get_slide_text(2));
+
+    m_k = 0;
+    m_i = 0;
+    m_j = 0;
 }
 void Warshall::slide_3()
 {
     // path traversal
+    m_next_slide_button->set_disabled(false);
+    m_next_path_button->set_disabled(true);
+    m_next_k_button->set_disabled(true);
     m_text->set_bbcode(get_slide_text(3));
+
+    m_k = -1;
+    m_i = -1;
+    m_j = -1;
 }
+
 void Warshall::slide_4()
 {
     // updating next node matrix
@@ -195,22 +258,21 @@ void Warshall::create_matrix()
         m_matrix_rows[j]->set_text(std::to_string(j).c_str());
         m_matrix_parent->add_child(m_matrix_rows[j]);
     }
-    m_matrix = matrix_temp<Label*>(m_matrix_size, std::vector<Label*>(m_matrix_size, nullptr));
+    m_label_matrix = matrix_temp<Label*>(m_matrix_size, std::vector<Label*>(m_matrix_size, nullptr));
     for(int i {0}; i < m_matrix_size; ++i) {
         for(int j {0}; j < m_matrix_size; ++j) {
-            m_matrix[i][j] = Label::_new();
-            m_matrix[i][j]->set_position(Vector2(25 * (i + 1), 20 * (j + 1)));
-            m_matrix[i][j]->set_text("13");
-            m_matrix_parent->add_child(m_matrix[i][j]);
+            m_label_matrix[i][j] = Label::_new();
+            m_label_matrix[i][j]->set_position(Vector2(25 * (i + 1), 20 * (j + 1)));
+            m_matrix_parent->add_child(m_label_matrix[i][j]);
         }
     }
 }
 
-void Warshall::reset_matrix()
+void Warshall::reset_label_matrix()
 {
     for(int i {0}; i < m_matrix_size; ++i) {
         for(int j {0}; j < m_matrix_size; ++j) {
-            m_matrix[i][j]->set_text("");
+            m_label_matrix[i][j]->set_text("");
         }
     }
 }
@@ -223,4 +285,36 @@ void Warshall::reset_matrix_styles()
         for(int j {0}; j < m_matrix_size; ++j)
             set_mat_style(i, j, Color(1.0, 1.0, 1.0));
     }
+}
+
+bool Warshall::is_label_hovered(const Label* label) const
+{
+    Vector2 size      = label->get_size();
+    Vector2 mouse_pos = label->get_local_mouse_position();
+    return mouse_pos.x >= 0 && mouse_pos.x < size.x && mouse_pos.y >= 0 && mouse_pos.y < size.y;
+}
+
+void Warshall::color_path(int i, int j, Color color)
+{
+    // the matrix must be a distance matrix -> not present in slide 0
+    if(m_cur_slide == 0)
+        return;
+    // don't use the graph's path matrix, use the one by the presented algorithm
+    if(m_dist_matrix[i][j] == iinf)
+        return;
+    std::vector<int> path = get_path(i, j);
+    for(int i {1}; i < path.size(); ++i) {
+        int a = path[i - 1];
+        int b = path[i];
+        m_graph->set_edge_color(a, b, color);
+        m_graph->set_edge_color(b, a, color);
+        set_mat_style(a, b, color);
+        set_mat_style(b, a, color);
+    }
+}
+void Warshall::color_node(int i, Color color)
+{
+    m_graph->get_node(i)->set_fill_color(color);
+    set_mat_row_style(i, color);
+    set_mat_col_style(i, color);
 }
