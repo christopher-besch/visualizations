@@ -12,13 +12,15 @@
 #include <Godot.hpp>
 #include <Node2D.hpp>
 #include <PackedScene.hpp>
+#include <RandomNumberGenerator.hpp>
 
 namespace godot {
 class Graph: public Node2D {
     GODOT_CLASS(Graph, Node2D)
 
 private:
-    Ref<PackedScene> m_graph_node_scene;
+    Ref<PackedScene>       m_graph_node_scene;
+    RandomNumberGenerator* m_random;
 
     std::vector<GraphNode*> m_nodes;
     // [from][to]
@@ -70,12 +72,9 @@ public:
 
     // evict prior data and use current m_adj to recalculate everything
     void reset();
+    void position_nodes();
     void set_zero_based_adjacency_list(const adjacency_list& adj);
     void set_one_based_adjacency_list(const adjacency_list& adj);
-
-    void position_nodes();
-    void calc_paths();
-    void calc_order();
 
     Vector2 get_center_of_mass() const;
     // center, size
@@ -86,7 +85,12 @@ public:
         return {center, size + 5.0 * m_node_radius * Vector2::ONE};
     }
 
+    void set_random_adj(int n);
+
 private:
+    void calc_paths();
+    void calc_order();
+
     GraphNode* instance_graph_node()
     {
         return Object::cast_to<GraphNode>(m_graph_node_scene->instance());

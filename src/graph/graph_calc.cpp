@@ -115,3 +115,47 @@ float Graph::calc_attr(int dist) const
     float s = 1.0 / static_cast<float>(dist);
     return (1.0 - s) * m_uncon_attr + s * m_con_attr;
 }
+
+void Graph::set_random_adj(int n)
+{
+    int y_max = static_cast<int>(std::sqrt(n));
+    int y_cut = m_random->randi_range(0, y_max - 1);
+    m_adj     = adjacency_list(n);
+    // ([0, n/y_max - 1], [0, y_max - 1])
+    std::vector<Vector2> pos(n);
+
+    int x = 0;
+    int y = 0;
+    for(int i {0}; i < n; ++i) {
+        pos[i] = Vector2(x, y);
+        ++y;
+        if(y >= y_max) {
+            y = 0;
+            ++x;
+        }
+    }
+
+    for(int a {0}; a < n; ++a) {
+        for(int b {0}; b < n; ++b) {
+            if(a == b)
+                continue;
+            // don't go over cut -> produce two cluster
+            if(pos[a].y < y_cut != pos[b].y < y_cut)
+                continue;
+            float len = (pos[a] - pos[b]).length();
+            if(len < 2 && !m_random->randi_range(0, 5)) {
+                m_adj[a].insert(b);
+                m_adj[b].insert(a);
+            }
+            if(len > 2 && len <= 4 && !m_random->randi_range(0, 15)) {
+                m_adj[a].insert(b);
+                m_adj[b].insert(a);
+            }
+            // if(len > 4 && len <= 8 && !m_random->randi_range(0, 14)) {
+            //     m_adj[a].insert(b);
+            //     m_adj[b].insert(a);
+            // }
+        }
+    }
+    reset();
+}

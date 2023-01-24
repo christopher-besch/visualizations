@@ -15,8 +15,6 @@ void GraphTest::_register_methods()
 
 void GraphTest::_init()
 {
-    m_random = RandomNumberGenerator::_new();
-    m_random->randomize();
 }
 
 void GraphTest::_ready()
@@ -30,10 +28,9 @@ void GraphTest::_ready()
     // get_input();
     // m_graph->set_one_based_adjacency_list(m_adj);
 
-    get_random_graph(100);
-    m_graph->set_zero_based_adjacency_list(m_adj);
+    m_graph->set_random_adj(30);
     // set labels
-    for(int i {0}; i < m_adj.size(); ++i) {
+    for(int i {0}; i < m_graph->get_adj().size(); ++i) {
         m_graph->get_node(i)->set_text(std::to_string(i).c_str());
     }
 
@@ -51,10 +48,9 @@ void GraphTest::_process(float delta)
         m_graph->position_nodes();
     }
     if(input->is_action_just_pressed("reset")) {
-        get_random_graph(30);
-        m_graph->set_zero_based_adjacency_list(m_adj);
+        m_graph->set_random_adj(30);
         // set labels
-        for(int i {0}; i < m_adj.size(); ++i) {
+        for(int i {0}; i < m_graph->get_adj().size(); ++i) {
             m_graph->get_node(i)->set_text(std::to_string(i).c_str());
         }
     }
@@ -96,9 +92,9 @@ void GraphTest::_process(float delta)
             // is hovered
             node->set_fill_color(Color(0.2, 0.2, 0.2));
 
-            // if(dist_mat[i][24] != iinf)
-            //     color_edges(i, 24, Color(1.0, 0.2, 0.0));
-            // return;
+            if(dist_mat[i][24] != iinf)
+                color_edges(i, 24, Color(1.0, 0.2, 0.0));
+            return;
             for(int j {0}; j < adj.size(); ++j) {
                 GraphNode* other_node = m_graph->get_node(j);
                 if(dist_mat[i][j] == 1) {
@@ -134,68 +130,18 @@ void GraphTest::color_edges(int start, int target, Color color, int start_draw)
     }
 }
 
-void GraphTest::get_input()
+adjacency_list GraphTest::get_input()
 {
 #include "graph_input.h"
     int n, m;
     input >> n >> m;
 
-    m_adj = adjacency_list(n + 1);
+    adjacency_list adj = adjacency_list(n + 1);
     for(int i {0}; i < m; ++i) {
         int a, b;
         input >> a >> b;
-        m_adj[a].insert(b);
-        m_adj[b].insert(a);
+        adj[a].insert(b);
+        adj[b].insert(a);
     }
-}
-
-void GraphTest::get_random_graph(int n)
-{
-    int y_max = static_cast<int>(std::sqrt(n));
-    int y_cut = m_random->randi_range(0, y_max - 1);
-    m_adj     = adjacency_list(n);
-    // ([0, n/y_max - 1], [0, y_max - 1])
-    std::vector<Vector2> pos(n);
-
-    int x = 0;
-    int y = 0;
-    for(int i {0}; i < n; ++i) {
-        pos[i] = Vector2(x, y);
-        ++y;
-        if(y >= y_max) {
-            y = 0;
-            ++x;
-        }
-    }
-
-    for(int a {0}; a < n; ++a) {
-        for(int b {0}; b < n; ++b) {
-            if(a == b)
-                continue;
-            // don't go over cut -> produce two cluster
-            if(pos[a].y < y_cut != pos[b].y < y_cut)
-                continue;
-            float len = (pos[a] - pos[b]).length();
-            if(len < 2 && !m_random->randi_range(0, 5)) {
-                m_adj[a].insert(b);
-                m_adj[b].insert(a);
-            }
-            if(len > 2 && len <= 4 && !m_random->randi_range(0, 15)) {
-                m_adj[a].insert(b);
-                m_adj[b].insert(a);
-            }
-            // if(len > 4 && len <= 8 && !m_random->randi_range(0, 14)) {
-            //     m_adj[a].insert(b);
-            //     m_adj[b].insert(a);
-            // }
-        }
-    }
-
-    // for(int a {0}; a < n; ++a) {
-    //     int c = m_random->randi_range(0, 2);
-    //     for(int s {0}; s < c; ++s) {
-    //         int b = m_random->randi_range(0, n - 1);
-    //         m_adj[a].insert(b);
-    //     }
-    // }
+    return adj;
 }

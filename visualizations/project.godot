@@ -11,7 +11,7 @@ config_version=4
 [application]
 
 config/name="Visualizations"
-run/main_scene="res://productions/graph_test.tscn"
+run/main_scene="res://productions/warshall.tscn"
 config/icon="res://icon.png"
 
 [global]

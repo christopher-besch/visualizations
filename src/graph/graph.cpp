@@ -25,6 +25,9 @@ void Graph::_init()
     m_node_radius        = 20.0;
     m_con_attr           = 150.0;
     m_uncon_attr         = 300.0;
+
+    m_random = RandomNumberGenerator::_new();
+    m_random->randomize();
 }
 
 void Graph::_ready()
