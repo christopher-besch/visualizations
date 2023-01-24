@@ -102,6 +102,14 @@ margin_right = 232.0
 margin_bottom = 24.0
 text = "Reset"
 
+[node name="Label" type="Label" parent="Sidebar"]
+margin_left = 447.0
+margin_top = 258.0
+margin_right = 846.0
+margin_bottom = 312.0
+text = "Created by Christopher Besch (chris-besch.com)
+Source Code: github.com/christopher-besch/visualizations"
+
 [node name="GraphViewportContainer" type="ViewportContainer" parent="."]
 margin_right = 1080.0
 margin_bottom = 1080.0

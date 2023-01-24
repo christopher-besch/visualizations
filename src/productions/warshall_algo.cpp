@@ -41,6 +41,7 @@ bool Warshall::next_path_without_next_slide()
     return true;
 }
 
+// same as Graph::get_path
 std::vector<int> Warshall::get_path(int start, int target)
 {
     std::vector<int> path;

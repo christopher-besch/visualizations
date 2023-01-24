@@ -41,19 +41,8 @@ void Warshall::_ready()
     m_reset_button             = get_node<Button>("Sidebar/ResetControl/ResetButton");
     m_node_num_input           = get_node<SpinBox>("Sidebar/ResetControl/NodeNumInput");
 
-    // use position of sidebar to determine its size
-    Vector2 root_vp_size = get_viewport()->get_size();
-    m_sidebar_width      = root_vp_size.x - m_sidebar->get_position().x;
-
     create_matrix();
-
     reset();
-}
-
-void Warshall::toggle_fullscreen()
-{
-    OS* os = OS::get_singleton();
-    os->set_window_fullscreen(!os->is_window_fullscreen());
 }
 
 void Warshall::_process(float delta)
@@ -71,7 +60,7 @@ void Warshall::_process(float delta)
     sidebar_background_trans.set_rotation_and_scale(0, Vector2(m_sidebar_width, root_vp_size.y));
     m_sidebar_background->set_transform(sidebar_background_trans);
 
-    // update camera
+    // update graph camera
     auto [rect_center, rect_size] = m_graph->get_pleasant_bounding_rect();
     Vector2 graph_vp_size         = m_graph_viewport_container->get_size();
     float   zoom                  = std::max(rect_size.x / graph_vp_size.x, rect_size.y / graph_vp_size.y);
@@ -107,6 +96,7 @@ void Warshall::_process(float delta)
     }
 
     // hovering over element in matrix -> color path
+    // this is really inefficient and I don't care
     for(int i {0}; i < m_graph->get_adj().size(); ++i) {
         for(int j {0}; j < m_graph->get_adj().size(); ++j) {
             if(is_label_hovered(m_label_matrix[i][j])) {
@@ -122,17 +112,20 @@ done:;
         color_node(m_k, Color(0.0, 0.0, 1.0));
 }
 
+void Warshall::toggle_fullscreen()
+{
+    OS* os = OS::get_singleton();
+    os->set_window_fullscreen(!os->is_window_fullscreen());
+}
+
 void Warshall::reset()
 {
-    int n         = m_node_num_input->get_value();
-    m_dist_matrix = matrix(n, std::vector<int>(n, iinf));
-    m_path_matrix = matrix(n, std::vector<int>(n, -1));
+    int n = m_node_num_input->get_value();
     m_graph->set_con_attr(std::max(150, 10 * n));
     m_graph->set_uncon_attr(std::max(300, 20 * n));
     m_graph->set_random_adj(n);
     m_graph->set_default_labels();
     m_cur_slide = -1;
-    reset_label_matrix();
 
     next_slide();
 }
@@ -169,6 +162,7 @@ void Warshall::slide_0()
     const matrix& dist_mat = m_graph->get_dist_mat();
     int           n        = dist_mat.size();
 
+    m_dist_matrix = matrix(n, std::vector<int>(n, iinf));
     for(int i {0}; i < n; ++i) {
         for(int j {0}; j < n; ++j) {
             if(dist_mat[i][j] == 1)
@@ -180,12 +174,14 @@ void Warshall::slide_0()
 }
 void Warshall::slide_1()
 {
-    // distance matrix
+    // initial distance matrix
     m_text->set_bbcode(slide_1_text);
 
     const matrix& dist_mat = m_graph->get_dist_mat();
     int           n        = dist_mat.size();
 
+    m_dist_matrix = matrix(n, std::vector<int>(n, iinf));
+    m_path_matrix = matrix(n, std::vector<int>(n, -1));
     for(int i {0}; i < n; ++i) {
         for(int j {0}; j < n; ++j) {
             if(i == j) {
@@ -220,8 +216,8 @@ void Warshall::slide_2()
 }
 void Warshall::slide_3()
 {
-    // path traversal
-    m_next_slide_button->set_disabled(false);
+    // conclusion
+    m_next_slide_button->set_disabled(true);
     m_next_path_button->set_disabled(true);
     m_next_k_button->set_disabled(true);
     m_text->set_bbcode(slide_3_text);
@@ -229,7 +225,6 @@ void Warshall::slide_3()
     m_k = -1;
     m_i = -1;
     m_j = -1;
-    m_next_slide_button->set_disabled(true);
 }
 
 void Warshall::create_matrix()
@@ -250,21 +245,13 @@ void Warshall::create_matrix()
         m_matrix_rows[j]->set_text(std::to_string(j).c_str());
         m_matrix_parent->add_child(m_matrix_rows[j]);
     }
+    // actual matrix
     m_label_matrix = matrix_temp<Label*>(m_matrix_size, std::vector<Label*>(m_matrix_size, nullptr));
     for(int i {0}; i < m_matrix_size; ++i) {
         for(int j {0}; j < m_matrix_size; ++j) {
             m_label_matrix[i][j] = Label::_new();
             m_label_matrix[i][j]->set_position(Vector2(25 * (i + 1), 20 * (j + 1)));
             m_matrix_parent->add_child(m_label_matrix[i][j]);
-        }
-    }
-}
-
-void Warshall::reset_label_matrix()
-{
-    for(int i {0}; i < m_matrix_size; ++i) {
-        for(int j {0}; j < m_matrix_size; ++j) {
-            m_label_matrix[i][j]->set_text("");
         }
     }
 }
@@ -304,6 +291,7 @@ void Warshall::color_path(int i, int j, Color color)
         set_mat_style(b, a, color);
     }
 }
+
 void Warshall::color_node(int i, Color color)
 {
     m_graph->get_node(i)->set_fill_color(color);

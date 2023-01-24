@@ -34,4 +34,9 @@
 # Scons stuff
 *.os
 
+# wasm stuff
+*.bc
+
 .cache
+.import
+build
