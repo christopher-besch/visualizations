@@ -24,8 +24,10 @@ private:
     // [from][to]
     std::vector<std::vector<EdgeStyle>> m_edge_styles;
 
-    adjacency_list   m_adj;
-    distance_matrix  m_dist_mat;
+    adjacency_list  m_adj;
+    distance_matrix m_dist_mat;
+    // [i][j] gives id of next node to go to when you want to get from i to j
+    distance_matrix  m_path_mat;
     std::vector<int> m_order;
 
     float m_node_radius;
@@ -50,6 +52,7 @@ public:
 
     const adjacency_list&  get_adj() const { return m_adj; }
     const distance_matrix& get_dist_mat() const { return m_dist_mat; }
+    const distance_matrix& get_path_mat() const { return m_path_mat; }
     GraphNode*             get_node(int idx) { return m_nodes[idx]; }
 
     float get_con_attr() const { return m_con_attr; }
@@ -71,7 +74,7 @@ public:
     void set_one_based_adjacency_list(const adjacency_list& adj);
 
     void position_nodes();
-    void calc_dist_mat();
+    void calc_paths();
     void calc_order();
 
     Vector2 get_center_of_mass() const;

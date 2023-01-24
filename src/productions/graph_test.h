@@ -36,6 +36,7 @@ private:
     void get_input();
 
     void get_random_graph(int n);
+    void color_edges(int start, int target, Color color, int start_draw = 0);
 };
 
 } // namespace godot

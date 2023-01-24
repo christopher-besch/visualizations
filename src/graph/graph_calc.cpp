@@ -27,25 +27,36 @@ void Graph::position_nodes()
     }
 }
 
-void Graph::calc_dist_mat()
+void Graph::calc_paths()
 {
     int n      = m_adj.size();
     m_dist_mat = distance_matrix(n, std::vector<int>(n, 0));
+    m_path_mat = distance_matrix(n, std::vector<int>(n, -1));
     for(int i {0}; i < n; ++i) {
         for(int j {0}; j < n; ++j) {
-            if(i == j)
+            if(i == j) {
                 m_dist_mat[i][j] = 0;
-            else if(m_adj[i].count(j) != 0)
+                m_path_mat[i][j] = j;
+            }
+            else if(m_adj[i].count(j) != 0) {
                 m_dist_mat[i][j] = 1;
-            else
+                m_path_mat[i][j] = j;
+            }
+            else {
                 m_dist_mat[i][j] = iinf;
+                m_path_mat[i][j] = -1;
+            }
         }
     }
 
     for(int k {0}; k < n; ++k) {
         for(int i {0}; i < n; ++i) {
             for(int j {0}; j < n; ++j) {
-                m_dist_mat[i][j] = std::min(m_dist_mat[i][j], m_dist_mat[i][k] + m_dist_mat[k][j]);
+                int new_dist = m_dist_mat[i][k] + m_dist_mat[k][j];
+                if(new_dist < m_dist_mat[i][j]) {
+                    m_dist_mat[i][j] = new_dist;
+                    m_path_mat[i][j] = m_path_mat[i][k];
+                }
             }
         }
     }
@@ -67,11 +78,6 @@ void Graph::calc_order()
     m_order = std::vector<int>();
     for(int i {0}; i < m_nodes.size(); ++i)
         sort_dfs(visited, i);
-
-    // set labels
-    for(int i {0}; i < m_nodes.size(); ++i) {
-        m_nodes[m_order[i]]->set_text(std::to_string(i).c_str());
-    }
 }
 
 Vector2 Graph::get_center_of_mass() const

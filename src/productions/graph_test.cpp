@@ -30,8 +30,12 @@ void GraphTest::_ready()
     // get_input();
     // m_graph->set_one_based_adjacency_list(m_adj);
 
-    get_random_graph(30);
+    get_random_graph(100);
     m_graph->set_zero_based_adjacency_list(m_adj);
+    // set labels
+    for(int i {0}; i < m_adj.size(); ++i) {
+        m_graph->get_node(i)->set_text(std::to_string(i).c_str());
+    }
 
     m_camera = get_node<Camera2DCtrl>("Camera");
 }
@@ -49,6 +53,10 @@ void GraphTest::_process(float delta)
     if(input->is_action_just_pressed("reset")) {
         get_random_graph(30);
         m_graph->set_zero_based_adjacency_list(m_adj);
+        // set labels
+        for(int i {0}; i < m_adj.size(); ++i) {
+            m_graph->get_node(i)->set_text(std::to_string(i).c_str());
+        }
     }
     if(input->is_action_just_pressed("increase_con_attr")) {
         prt("con: " << m_graph->get_con_attr() << " uncon: " << m_graph->get_uncon_attr());
@@ -72,6 +80,7 @@ void GraphTest::_process(float delta)
     auto    adj       = m_graph->get_adj();
     auto    dist_mat  = m_graph->get_dist_mat();
     Vector2 mouse_pos = get_local_mouse_position();
+    // reset
     for(int i {0}; i < adj.size(); ++i) {
         GraphNode* node = m_graph->get_node(i);
         node->set_fill_color(Color(1.0, 1.0, 1.0));
@@ -80,31 +89,47 @@ void GraphTest::_process(float delta)
         for(int j {0}; j < adj.size(); ++j) {
             m_graph->set_edge_color(i, j, Color(1.0, 1.0, 1.0));
         }
+    // set color
     for(int i {0}; i < adj.size(); ++i) {
         GraphNode* node = m_graph->get_node(i);
         if((node->get_position() - mouse_pos).length() < node->get_radius()) {
+            // is hovered
             node->set_fill_color(Color(0.2, 0.2, 0.2));
 
+            // if(dist_mat[i][24] != iinf)
+            //     color_edges(i, 24, Color(1.0, 0.2, 0.0));
+            // return;
             for(int j {0}; j < adj.size(); ++j) {
                 GraphNode* other_node = m_graph->get_node(j);
                 if(dist_mat[i][j] == 1) {
                     other_node->set_fill_color(Color(1.0, 0.0, 0.0));
-                    m_graph->set_edge_color(i, j, Color(1.0, 0.0, 0.0));
-                    m_graph->set_edge_color(j, i, Color(1.0, 0.0, 0.0));
+                    color_edges(i, j, Color(1.0, 0.0, 0.0));
                 }
                 else if(dist_mat[i][j] == 2) {
                     other_node->set_fill_color(Color(0.8, 0.0, 0.8));
-                    m_graph->set_edge_color(i, j, Color(0.8, 0.0, 0.8));
-                    m_graph->set_edge_color(j, i, Color(0.8, 0.0, 0.8));
+                    color_edges(i, j, Color(0.8, 0.0, 0.8), 1);
                 }
                 else if(dist_mat[i][j] == 3) {
-                    other_node->set_fill_color(Color(0.1, 0.7, 0.2));
-                    m_graph->set_edge_color(i, j, Color(0.1, 0.7, 0.2));
-                    m_graph->set_edge_color(j, i, Color(0.1, 0.7, 0.2));
+                    other_node->set_fill_color(Color(0.0, 0.6, 0.2));
+                    color_edges(i, j, Color(0.0, 0.6, 0.2), 2);
                 }
             }
-
             return;
+        }
+    }
+}
+
+void GraphTest::color_edges(int start, int target, Color color, int start_draw)
+{
+    auto path_mat = m_graph->get_path_mat();
+    int  last;
+    int  idx {0};
+    while(start != target) {
+        last  = start;
+        start = path_mat[start][target];
+        if(idx++ >= start_draw) {
+            m_graph->set_edge_color(last, start, color);
+            m_graph->set_edge_color(start, last, color);
         }
     }
 }

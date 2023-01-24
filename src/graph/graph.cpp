@@ -81,7 +81,7 @@ void Graph::reset()
     for(int i {0}; i < n; ++i)
         m_nodes[i]->set_all_nodes(&m_nodes, i);
 
-    calc_dist_mat();
+    calc_paths();
     calc_order();
     position_nodes();
 
