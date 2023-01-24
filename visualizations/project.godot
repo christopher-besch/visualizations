@@ -14,6 +14,12 @@ config/name="Visualizations"
 run/main_scene="res://productions/warshall.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/width=1920
+window/size/height=1080
+window/size/fullscreen=true
+
 [global]
 
 alias=false

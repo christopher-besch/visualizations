@@ -7,8 +7,10 @@
 
 #define prt(x) Godot::print(String((std::stringstream() << x).str().c_str()))
 
-using adjacency_list  = std::vector<std::set<int>>;
-using distance_matrix = std::vector<std::vector<int>>;
+using adjacency_list = std::vector<std::set<int>>;
+template<typename T>
+using matrix_temp = std::vector<std::vector<T>>;
+using matrix      = matrix_temp<int>;
 
 constexpr float     finf  = std::numeric_limits<float>::max() / 2;
 constexpr double    dinf  = std::numeric_limits<double>::max() / 2;

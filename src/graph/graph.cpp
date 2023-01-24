@@ -112,3 +112,28 @@ void Graph::set_one_based_adjacency_list(const adjacency_list& adj)
     }
     reset();
 }
+
+void Graph::reset_styles()
+{
+    for(int i {0}; i < m_adj.size(); ++i)
+        m_nodes[i]->set_fill_color(Color(1.0, 1.0, 1.0));
+    for(int i {0}; i < m_adj.size(); ++i)
+        for(int j {0}; j < m_adj.size(); ++j)
+            set_edge_color(i, j, Color(1.0, 1.0, 1.0));
+}
+
+void Graph::set_default_labels()
+{
+    for(int i {0}; i < m_adj.size(); ++i) {
+        m_nodes[i]->set_text(std::to_string(i).c_str());
+    }
+}
+
+int Graph::get_hovered_node()
+{
+    Vector2 mouse_pos = get_local_mouse_position();
+    for(int i {0}; i < m_adj.size(); ++i)
+        if((m_nodes[i]->get_position() - mouse_pos).length() < m_nodes[i]->get_radius())
+            return i;
+    return -1;
+}

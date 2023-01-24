@@ -30,8 +30,8 @@ void Graph::position_nodes()
 void Graph::calc_paths()
 {
     int n      = m_adj.size();
-    m_dist_mat = distance_matrix(n, std::vector<int>(n, 0));
-    m_path_mat = distance_matrix(n, std::vector<int>(n, -1));
+    m_dist_mat = matrix(n, std::vector<int>(n, 0));
+    m_path_mat = matrix(n, std::vector<int>(n, -1));
     for(int i {0}; i < n; ++i) {
         for(int j {0}; j < n; ++j) {
             if(i == j) {
@@ -158,4 +158,16 @@ void Graph::set_random_adj(int n)
         }
     }
     reset();
+}
+
+std::vector<int> Graph::get_path(int start, int target)
+{
+    std::vector<int> path;
+    int              cur = start;
+    path.push_back(cur);
+    while(cur != target) {
+        cur = m_path_mat[cur][target];
+        path.push_back(cur);
+    }
+    return path;
 }

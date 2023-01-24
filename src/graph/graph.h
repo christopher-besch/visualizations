@@ -26,10 +26,10 @@ private:
     // [from][to]
     std::vector<std::vector<EdgeStyle>> m_edge_styles;
 
-    adjacency_list  m_adj;
-    distance_matrix m_dist_mat;
+    adjacency_list m_adj;
+    matrix         m_dist_mat;
     // [i][j] gives id of next node to go to when you want to get from i to j
-    distance_matrix  m_path_mat;
+    matrix           m_path_mat;
     std::vector<int> m_order;
 
     float m_node_radius;
@@ -52,10 +52,10 @@ public:
     void  set_edge_color(int from, int to, Color color) { m_edge_styles[from][to].color = color; }
     void  set_edge_width(int from, int to, float width) { m_edge_styles[from][to].width = width; }
 
-    const adjacency_list&  get_adj() const { return m_adj; }
-    const distance_matrix& get_dist_mat() const { return m_dist_mat; }
-    const distance_matrix& get_path_mat() const { return m_path_mat; }
-    GraphNode*             get_node(int idx) { return m_nodes[idx]; }
+    const adjacency_list& get_adj() const { return m_adj; }
+    const matrix&         get_dist_mat() const { return m_dist_mat; }
+    const matrix&         get_path_mat() const { return m_path_mat; }
+    GraphNode*            get_node(int idx) { return m_nodes[idx]; }
 
     float get_con_attr() const { return m_con_attr; }
     float get_uncon_attr() const { return m_uncon_attr; }
@@ -75,6 +75,7 @@ public:
     void position_nodes();
     void set_zero_based_adjacency_list(const adjacency_list& adj);
     void set_one_based_adjacency_list(const adjacency_list& adj);
+    void reset_styles();
 
     Vector2 get_center_of_mass() const;
     // center, size
@@ -84,8 +85,12 @@ public:
         auto [center, size] = get_bounding_rect();
         return {center, size + 5.0 * m_node_radius * Vector2::ONE};
     }
+    int get_hovered_node();
+
+    std::vector<int> get_path(int start, int target);
 
     void set_random_adj(int n);
+    void set_default_labels();
 
 private:
     void calc_paths();
