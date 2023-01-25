@@ -9,3 +9,4 @@
 - `scons platform=javascript generate_bindings=yes -j12 target=release`
 
 ![](https://raw.githubusercontent.com/christopher-besch/visualizations/main/images/03.png)
+![](https://raw.githubusercontent.com/christopher-besch/visualizations/main/images/04.png)
