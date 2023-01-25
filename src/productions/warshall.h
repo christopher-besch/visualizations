@@ -59,8 +59,9 @@ private:
     matrix_temp<Label*> m_label_matrix;
     std::vector<Label*> m_matrix_cols;
     std::vector<Label*> m_matrix_rows;
-    int                 m_matrix_size {32};
-    Color               m_hover_color = Color(1.0, 0.0, 0.0);
+    const int           m_matrix_size {32};
+    const Vector2       m_cell_size {Vector2(25, 20)};
+    const Color         m_hover_color = Color(1.0, 0.0, 0.0);
 
     int m_k {-1};
     int m_i {-1};
@@ -113,6 +114,7 @@ private:
     }
 
     bool is_label_hovered(const Label* label) const;
+    void color_hovered();
     void color_path(int i, int j, Color color);
     void color_node(int i, Color color);
 

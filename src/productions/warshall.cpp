@@ -71,42 +71,9 @@ void Warshall::_process(float delta)
     if(input->is_action_just_pressed("quit"))
         quick_exit(0);
 
-    // set node and edges color
     m_graph->reset_styles();
     reset_matrix_styles();
-    // hovering over node or side of matrix
-    int i = m_graph->get_hovered_node();
-    for(int idx {0}; idx < m_graph->get_adj().size(); ++idx)
-        if(is_label_hovered(m_matrix_rows[idx])) {
-            i = idx;
-            break;
-        }
-    for(int idx {0}; idx < m_graph->get_adj().size(); ++idx)
-        if(is_label_hovered(m_matrix_cols[idx])) {
-            i = idx;
-            break;
-        }
-
-    if(i != -1) {
-        GraphNode* node = m_graph->get_node(i);
-        color_node(i, m_hover_color);
-        for(int j: m_graph->get_adj()[i]) {
-            color_path(i, j, m_hover_color);
-        }
-    }
-
-    // hovering over element in matrix -> color path
-    // this is really inefficient and I don't care
-    for(int i {0}; i < m_graph->get_adj().size(); ++i) {
-        for(int j {0}; j < m_graph->get_adj().size(); ++j) {
-            if(is_label_hovered(m_label_matrix[i][j])) {
-                color_path(i, j, m_hover_color);
-                goto done;
-            }
-        }
-    }
-done:;
-
+    color_hovered();
     // color m_k if valid
     if(m_k != -1 && m_k < m_graph->get_adj().size())
         color_node(m_k, Color(0.0, 0.0, 1.0));
@@ -233,7 +200,7 @@ void Warshall::create_matrix()
     m_matrix_cols = std::vector<Label*>(m_matrix_size, nullptr);
     for(int i {0}; i < m_matrix_size; ++i) {
         m_matrix_cols[i] = Label::_new();
-        m_matrix_cols[i]->set_position(Vector2(25 * (i + 1), 0));
+        m_matrix_cols[i]->set_position(Vector2(m_cell_size.x * (i + 1), 0));
         m_matrix_cols[i]->set_text(std::to_string(i).c_str());
         m_matrix_parent->add_child(m_matrix_cols[i]);
     }
@@ -241,7 +208,7 @@ void Warshall::create_matrix()
     m_matrix_rows = std::vector<Label*>(m_matrix_size, nullptr);
     for(int j {0}; j < m_matrix_size; ++j) {
         m_matrix_rows[j] = Label::_new();
-        m_matrix_rows[j]->set_position(Vector2(0, 20 * (j + 1)));
+        m_matrix_rows[j]->set_position(Vector2(0, m_cell_size.y * (j + 1)));
         m_matrix_rows[j]->set_text(std::to_string(j).c_str());
         m_matrix_parent->add_child(m_matrix_rows[j]);
     }
@@ -250,7 +217,7 @@ void Warshall::create_matrix()
     for(int i {0}; i < m_matrix_size; ++i) {
         for(int j {0}; j < m_matrix_size; ++j) {
             m_label_matrix[i][j] = Label::_new();
-            m_label_matrix[i][j]->set_position(Vector2(25 * (i + 1), 20 * (j + 1)));
+            m_label_matrix[i][j]->set_position(Vector2(m_cell_size.x * (i + 1), m_cell_size.y * (j + 1)));
             m_matrix_parent->add_child(m_label_matrix[i][j]);
         }
     }
@@ -271,6 +238,37 @@ bool Warshall::is_label_hovered(const Label* label) const
     Vector2 size      = label->get_size();
     Vector2 mouse_pos = label->get_local_mouse_position();
     return mouse_pos.x >= 0 && mouse_pos.x < size.x && mouse_pos.y >= 0 && mouse_pos.y < size.y;
+}
+
+void Warshall::color_hovered()
+{
+    int     n              = m_graph->get_adj().size();
+    Vector2 mouse_pos      = m_matrix_parent->get_local_mouse_position();
+    int     mouse_coords_x = mouse_pos.x / m_cell_size.x;
+    int     mouse_coords_y = mouse_pos.y / m_cell_size.y;
+
+    // hovering over node
+    int i = m_graph->get_hovered_node();
+    // hovering over side of matrix
+    if(i == -1) {
+        if(mouse_coords_x == 0 && mouse_coords_y > 0 && mouse_coords_y < n + 1)
+            i = mouse_coords_y - 1;
+        else if(mouse_coords_y == 0 && mouse_coords_x > 0 && mouse_coords_x < n + 1)
+            i = mouse_coords_x - 1;
+    }
+
+    // color node and connected edges
+    if(i != -1) {
+        GraphNode* node = m_graph->get_node(i);
+        color_node(i, m_hover_color);
+        for(int j: m_graph->get_adj()[i]) {
+            color_path(i, j, m_hover_color);
+        }
+    }
+
+    // hovering over element in matrix
+    if(mouse_coords_x > 0 && mouse_coords_x < n + 1 && mouse_coords_y > 0 && mouse_coords_y < n + 1)
+        color_path(mouse_coords_x - 1, mouse_coords_y - 1, m_hover_color);
 }
 
 void Warshall::color_path(int i, int j, Color color)

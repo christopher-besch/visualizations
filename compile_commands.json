@@ -1,14 +1,50 @@
 [
     {
+        "command": "g++ -o src/camera2d_ctrl.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/camera2d_ctrl.cpp",
+        "directory": "/home/chris/godot/visualizations",
+        "file": "src/camera2d_ctrl.cpp",
+        "output": "src/camera2d_ctrl.os"
+    },
+    {
         "command": "g++ -o src/gdlibrary.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/gdlibrary.cpp",
         "directory": "/home/chris/godot/visualizations",
         "file": "src/gdlibrary.cpp",
         "output": "src/gdlibrary.os"
     },
     {
-        "command": "g++ -o src/graph.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/graph.cpp",
+        "command": "g++ -o src/graph/graph.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/graph/graph.cpp",
         "directory": "/home/chris/godot/visualizations",
-        "file": "src/graph.cpp",
-        "output": "src/graph.os"
+        "file": "src/graph/graph.cpp",
+        "output": "src/graph/graph.os"
+    },
+    {
+        "command": "g++ -o src/graph/graph_calc.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/graph/graph_calc.cpp",
+        "directory": "/home/chris/godot/visualizations",
+        "file": "src/graph/graph_calc.cpp",
+        "output": "src/graph/graph_calc.os"
+    },
+    {
+        "command": "g++ -o src/graph/graph_node.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/graph/graph_node.cpp",
+        "directory": "/home/chris/godot/visualizations",
+        "file": "src/graph/graph_node.cpp",
+        "output": "src/graph/graph_node.os"
+    },
+    {
+        "command": "g++ -o src/productions/graph_test.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/productions/graph_test.cpp",
+        "directory": "/home/chris/godot/visualizations",
+        "file": "src/productions/graph_test.cpp",
+        "output": "src/productions/graph_test.os"
+    },
+    {
+        "command": "g++ -o src/productions/warshall.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/productions/warshall.cpp",
+        "directory": "/home/chris/godot/visualizations",
+        "file": "src/productions/warshall.cpp",
+        "output": "src/productions/warshall.os"
+    },
+    {
+        "command": "g++ -o src/productions/warshall_algo.os -c -std=c++17 -fPIC -g3 -Og -fPIC -I. -Igodot-cpp/godot-headers -Igodot-cpp/include -Igodot-cpp/include/core -Igodot-cpp/include/gen -Isrc src/productions/warshall_algo.cpp",
+        "directory": "/home/chris/godot/visualizations",
+        "file": "src/productions/warshall_algo.cpp",
+        "output": "src/productions/warshall_algo.os"
     }
 ]
