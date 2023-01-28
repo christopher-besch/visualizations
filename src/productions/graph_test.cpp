@@ -28,7 +28,7 @@ void GraphTest::_ready()
     // get_input();
     // m_graph->set_one_based_adjacency_list(m_adj);
 
-    m_graph->set_random_adj(30);
+    m_graph->set_random_adj(60);
     m_graph->set_default_labels();
 
     m_camera = get_node<Camera2DCtrl>("Camera");
@@ -78,28 +78,28 @@ void GraphTest::_process(float delta)
         // is hovered
         node->set_fill_color(Color(0.2, 0.2, 0.2));
 
-        if(dist_mat[i][24] != iinf)
-            color_edges(i, 24, Color(1.0, 0.2, 0.0));
-        return;
+        // if(dist_mat[i][24] != iinf)
+        //     color_path(i, 24, Color(1.0, 0.2, 0.0));
+        // return;
         for(int j {0}; j < adj.size(); ++j) {
             GraphNode* other_node = m_graph->get_node(j);
             if(dist_mat[i][j] == 1) {
                 other_node->set_fill_color(Color(1.0, 0.0, 0.0));
-                color_edges(i, j, Color(1.0, 0.0, 0.0));
+                color_path(i, j, Color(1.0, 0.0, 0.0));
             }
             else if(dist_mat[i][j] == 2) {
                 other_node->set_fill_color(Color(0.8, 0.0, 0.8));
-                color_edges(i, j, Color(0.8, 0.0, 0.8), 1);
+                color_path(i, j, Color(0.8, 0.0, 0.8), 1);
             }
             else if(dist_mat[i][j] == 3) {
                 other_node->set_fill_color(Color(0.0, 0.6, 0.2));
-                color_edges(i, j, Color(0.0, 0.6, 0.2), 2);
+                color_path(i, j, Color(0.0, 0.6, 0.2), 2);
             }
         }
     }
 }
 
-void GraphTest::color_edges(int start, int target, Color color, int start_draw)
+void GraphTest::color_path(int start, int target, Color color, int start_draw)
 {
     std::vector<int> path = m_graph->get_path(start, target);
     for(int i {start_draw + 1}; i < path.size(); ++i) {

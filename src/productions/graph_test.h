@@ -32,7 +32,7 @@ public:
 private:
     adjacency_list get_input();
 
-    void color_edges(int start, int target, Color color, int start_draw = 0);
+    void color_path(int start, int target, Color color, int start_draw = 0);
 };
 
 } // namespace godot
