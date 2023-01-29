@@ -24,7 +24,7 @@ private:
                                "Fun Fact: In the case of an undirected graph this is a symmetric matrix (along its diagonal—everywhere the row and column index are equal).\n"
                                "\n"
                                "Hover over the nodes and you will see their respective rows and columns in the matrix highlighted.";
-    const char* slide_1_text = "Say you wanted to calculate the minimum path length between node a and node b. The path length is the amount of edges on the path—not the amount of nodes.\n"
+    const char* slide_1_text = "Say you wanted to calculate the minimum path length between node a and node b. The path length is the amount of edges on the path; not the amount of nodes.\n"
                                "And now say you wanted to calculate this path length for any two nodes a and b. This results in a distance matrix, with the value in the i-th column and j-th row representing the path length from node i to node j. If there is no path between these nodes, the value is inf.\n"
                                "\n"
                                "The Floyd-Warshall algorithm can be used to calculate this matrix. It populates an initial distance matrix with 0 on the diagonal, 1 wherever there is a 1 in the adjacency matrix (i.e. there is an edge from a and b), and inf everywhere else. Nothing of this is new information, we are only preparing for the real algorithm.\n"
