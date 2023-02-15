@@ -19,3 +19,4 @@ If you need some help with that, create an issue and let me know.
 - `source ~/.emsdk/emsdk_env.sh && scons platform=javascript -j12 target=release && scons platform=linux -j12 target=release`
 - `scons platform=javascript generate_bindings=yes -j12 target=release`
 
+[https://visualizations.chris-besch.com/globe_torch/globe_torch.html](https://visualizations.chris-besch.com/globe_torch/globe_torch.html)
