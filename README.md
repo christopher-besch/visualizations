@@ -20,3 +20,5 @@ If you need some help with that, create an issue and let me know.
 - `scons platform=javascript generate_bindings=yes -j12 target=release`
 
 [https://visualizations.chris-besch.com/globe_torch/globe_torch.html](https://visualizations.chris-besch.com/globe_torch/globe_torch.html)
+[https://visualizations.chris-besch.com/ant_wrumwrum/index.html](https://visualizations.chris-besch.com/ant_wrumwrum/index.html)
+[https://visualizations.chris-besch.com/ant_wrumwrum2/index.html](https://visualizations.chris-besch.com/ant_wrumwrum2/index.html)
