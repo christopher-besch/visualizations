@@ -33,7 +33,7 @@ private:
     const char* slide_2_text = "Action! The algorithm goes through all nodes k (highlighted in blue) and checks for all other nodes a and b if the path from a to b can be shortened using k. If the path from a to k plus from k to b is shorter than from a to b without using k, the matrix gets updated.\n"
                                "\n"
                                "Once you have done that for every node k, you end up with the desired distance matrix.\n"
-                               "You can run the algorithm until one path got updated by clicking 'Next Path' and until a new k is needed with 'Next k'";
+                               "You can run the algorithm until one path got updated by clicking 'Next Path' and until a new k is needed with 'Next k'.";
     const char* slide_3_text = "Now we have calculated every possible path length. Feel free to play around hovering over all matrix cells.\n"
                                "\n"
                                "This is the end of our little adventure. You can change the size of the graph below and restart the presentation with a new graph.";

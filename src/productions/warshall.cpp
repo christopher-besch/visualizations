@@ -129,6 +129,11 @@ void Warshall::slide_0()
     const matrix& dist_mat = m_graph->get_dist_mat();
     int           n        = dist_mat.size();
 
+    // reset all labels
+    for(int i {0}; i < m_matrix_size; ++i)
+        for(int j {0}; j < m_matrix_size; ++j)
+            m_label_matrix[i][j]->set_text("");
+
     m_dist_matrix = matrix(n, std::vector<int>(n, iinf));
     for(int i {0}; i < n; ++i) {
         for(int j {0}; j < n; ++j) {
